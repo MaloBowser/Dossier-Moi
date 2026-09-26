@@ -16,7 +16,7 @@ frame.onload = () => {
     click('outlook');
     assert('Ouverture Outlook', visible().length === 1 && visible()[0].dataset.window === 'outlook');
     assert('Retour masqué', w.getComputedStyle(d.querySelector('.desktop-return')).display === 'none');
-    assert('Taille plein écran', Math.abs(visible()[0].getBoundingClientRect().width - w.innerWidth) < 2);
+    assert('Taille plein écran hors animation', Math.abs(visible()[0].offsetWidth - w.innerWidth) < 2);
     d.getElementById('future-mail').click();
     assert('Lettre affichée', !d.getElementById('future-letter').hidden);
     assert('Notifications effacées', [...d.querySelectorAll('.notification-badge, .unread-count')].every(e => e.hidden));
@@ -29,6 +29,15 @@ frame.onload = () => {
     click('outlook');
     assert('Réduction depuis la barre', visible().length === 0 && !d.body.classList.contains('has-open-window'));
     assert('Retour restauré', w.getComputedStyle(d.querySelector('.desktop-return')).display !== 'none');
+    click('outlook');
+    const closeOutlook = d.querySelector('#window-outlook [data-close]');
+    assert('Croix Outlook visible et accessible', closeOutlook.offsetWidth >= 32 && !closeOutlook.closest('[aria-hidden="true"]'));
+    closeOutlook.click();
+    assert('Fermeture Outlook', visible().length === 0 && !d.querySelector('.taskbar-button[data-app="outlook"]').classList.contains('is-running'));
+    assert('Focus après fermeture', d.activeElement === d.querySelector('.taskbar-button[data-app="outlook"]'));
+    click('outlook');
+    d.querySelector('#window-outlook [data-minimize]').click();
+    assert('Réduction Outlook', visible().length === 0 && d.querySelector('.taskbar-button[data-app="outlook"]').classList.contains('is-running'));
     click('bricklink');
     d.querySelector('#window-bricklink [data-close]').click();
     assert('Fermeture BrickLink', visible().length === 0 && !d.querySelector('.taskbar-button[data-app="bricklink"]').classList.contains('is-running'));
@@ -37,6 +46,9 @@ frame.onload = () => {
     assert('Échap revient au bureau', visible().length === 0);
     const expectedTime = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
     assert('Heure réelle', d.getElementById('desktop-time').textContent === expectedTime);
+    assert('Année 2040', d.getElementById('desktop-date').textContent.endsWith('/2040'));
+    assert('Grande horloge supprimée', !d.querySelector('.desktop-future, #ambient-time'));
+    assert('Fond futuriste', w.getComputedStyle(d.body).backgroundImage.includes('bureau-2040.png'));
     assert('Aucune ressource distante', ![...d.querySelectorAll('script[src], link[href], iframe[src]')].some(e => /^https?:/.test(e.getAttribute('src') || e.getAttribute('href'))));
     document.getElementById('results').textContent = 'TOUT OK — ' + results.length + ' contrôles\n' + results.join('\n');
   } catch(e) { document.getElementById('results').textContent = 'ÉCHEC : ' + e.message; }

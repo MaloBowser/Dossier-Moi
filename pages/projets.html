@@ -92,9 +92,13 @@
         <section class="app-window outlook-window" id="window-outlook" data-window="outlook" aria-label="Outlook, messagerie fictive" tabindex="-1" hidden>
             <header class="outlook-header">
                 <span class="app-launcher" data-icon="apps" aria-hidden="true"></span>
-                <strong>Outlook</strong>
+                <strong>Outlook <small class="edition-badge">2040</small></strong>
                 <div class="outlook-search" aria-hidden="true"><span data-icon="search"></span>Rechercher</div>
-                <div class="outlook-tools" aria-hidden="true"><span data-icon="bell"></span><span data-icon="more"></span><span class="profile-avatar">M</span></div>
+                <div class="outlook-tools"><span data-icon="bell" aria-hidden="true"></span><span class="profile-avatar" aria-hidden="true">M</span></div>
+                <div class="window-controls outlook-controls">
+                    <button type="button" data-minimize title="Réduire Outlook" aria-label="Réduire Outlook">−</button>
+                    <button type="button" data-close title="Fermer Outlook" aria-label="Fermer Outlook">×</button>
+                </div>
             </header>
             <div class="outlook-shell">
                 <aside class="outlook-rail" aria-label="Applications Outlook décoratives">
@@ -148,12 +152,16 @@
                         </aside>
                         <section class="mail-list" aria-label="Liste des mails">
                             <header class="mail-list-tabs"><strong>Prioritaire</strong><span>Autres</span><span data-icon="copy"></span><span data-icon="arrow-down"></span><span data-icon="filter"></span><span data-icon="sort"></span></header>
+                            <div class="mail-scroll">
                             <div class="mail-date">⌄ &nbsp;&nbsp; Aujourd’hui</div>
                             <button class="mail-card is-unread" id="future-mail" type="button" aria-label="Lire le message non lu de Malo 2026 : À mon moi de 2040" aria-controls="future-letter">
                                 <span class="unread-dot" aria-hidden="true"></span><span class="profile-avatar">M</span>
                                 <span class="mail-summary"><strong>Malo 2026</strong><b>À mon moi de 2040</b><small>Une lettre envoyée depuis le passé…</small></span>
                                 <span class="mail-meta"><span data-icon="paperclip"></span><time>09:42</time></span>
                             </button>
+                            <div id="custom-mails" aria-label="Mails personnalisés"></div>
+                            </div>
+                            <p class="mail-sync" id="mail-sync" role="status">Chargement des messages…</p>
                         </section>
                         <article class="reading-pane" aria-label="Panneau de lecture">
                             <div class="future-letter" id="future-letter" hidden>
@@ -164,6 +172,15 @@
                                 </header>
                                 <!-- Remplacer ces paragraphes par la lettre définitive. -->
                                 <div class="letter-body"><p>Bonjour Malo,</p><p class="letter-placeholder">Le texte de ma lettre à mon moi de 2040 sera ajouté ici.</p><p>À bientôt,<br>Malo, en 2026</p></div>
+                            </div>
+                            <div class="future-letter custom-letter" id="custom-letter" hidden>
+                                <button class="back-to-mails" id="back-from-custom" type="button"><span data-icon="arrow-left"></span>Boîte de réception</button>
+                                <header>
+                                    <h2 tabindex="-1"></h2>
+                                    <div class="letter-sender"><span class="profile-avatar"></span><p><strong></strong><small>À : Malo 2040</small></p><time>2040</time></div>
+                                    <div class="reading-actions" aria-hidden="true"><span>↶ Répondre</span><span>↪ Transférer</span><span>•••</span></div>
+                                </header>
+                                <div class="letter-body"></div>
                             </div>
                         </article>
                     </div>
@@ -185,7 +202,7 @@
                     <div class="file-tree" aria-label="Arborescence fictive du projet">
                         <strong>⌄ dossier moi</strong>
                         <div>⌄ <span data-icon="folder"></span>images</div>
-                        <span class="tree-child"><i>▧</i> bureau-chat.png</span><span class="tree-child"><i>▧</i> outlook-montagnes.png</span><span class="tree-child"><i>▧</i> favicon.svg</span>
+                        <span class="tree-child"><i>▧</i> bureau-2040.png</span><span class="tree-child"><i>▧</i> outlook-montagnes.png</span><span class="tree-child"><i>▧</i> favicon.svg</span>
                         <div>⌄ <span data-icon="folder"></span>pages</div>
                         <span class="tree-child"><i>‹›</i> affrontement.html</span><span class="tree-child"><i>‹›</i> conclusion.html</span><span class="tree-child"><i>‹›</i> evaluation.html</span>
                         <span class="tree-child selected"><i>‹›</i> projets.html</span><span class="tree-child"><i>‹›</i> recits.html</span><span class="tree-child"><i>‹›</i> reverie.html</span><span class="tree-child"><i>‹›</i> souvenirs.html</span>

@@ -1,0 +1,58 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><title>Tests des mails</title>
+<style>body{margin:0}iframe{width:100vw;height:100vh;border:0}pre{position:fixed;inset:0 auto auto 0;background:white;z-index:10;max-width:700px}</style>
+<iframe id="app" src="../pages/projets.html#outlook"></iframe><pre id="results">EN COURS</pre>
+<script>
+const frame = document.getElementById('app');
+frame.onload = async () => {
+  const results = [];
+  const assert = (name, ok) => { if (!ok) throw Error(name); results.push(name + ': OK'); };
+  const waitFor = async predicate => { for(let n=0;n<200;n++) { if(predicate()) return; await new Promise(r=>setTimeout(r,25)); } throw Error('Délai dépassé'); };
+  try {
+    const d=frame.contentDocument,w=frame.contentWindow;
+    const cards=()=>d.querySelectorAll('.custom-mail');
+    const status=()=>d.getElementById('mail-sync').textContent;
+    await waitFor(()=>status().includes('à jour'));
+    assert('20 vrais fichiers accessibles, modèles vides masqués', cards().length===0);
+    const templates=await Promise.all(Array.from({length:20},(_,i)=>fetch('../textes/projets/mails/mail-'+String(i+1).padStart(2,'0')+'.md').then(r=>r.text())));
+    assert('20 modèles à compléter', templates.every(t=>/^De:\s*\nObjet:\s*\nDébut:\s*$/.test(t)));
+    let mode='initial';
+    w.fetch=async url=>{
+      const id=Number(url.match(/mail-(\d+)\.md/)[1]);
+      if(mode==='error') throw Error('Indisponible');
+      let text='\uFEFFDe: Équipe '+id+'\r\nObjet: Clin d’œil '+id+'\r\nDébut: Souvenir : déjà 2040 !';
+      if(mode==='updated' && id===1) text='de: Léa\nOBJET: <img src=x onerror=alert(1)>\ndebut: Nouvelle phrase\n---\nBonjour Malo,\n\nUne histoire à raconter.';
+      if(mode==='empty') text='De:\nObjet:\nDébut:\n';
+      return {ok:true,text:async()=>text};
+    };
+    w.dispatchEvent(new w.Event('focus'));
+    await waitFor(()=>cards().length===20);
+    if (location.search.includes('preview')) {
+      document.getElementById('results').hidden=true;
+      if (location.search.includes('mobile')) { frame.style.width='390px'; frame.style.height='844px'; cards()[0].click(); }
+      return;
+    }
+    assert('Vingt mails affichés dans l’ordre', cards()[19].querySelector('strong').textContent==='Équipe 20');
+    assert('Lettre du passé toujours première', d.querySelector('.mail-card').id==='future-mail');
+    assert('Liste défilante', d.querySelector('.mail-scroll').scrollHeight>d.querySelector('.mail-scroll').clientHeight);
+    cards()[0].click();
+    assert('Expéditeur et aperçu lus depuis le fichier', d.querySelector('#custom-letter .letter-sender strong').textContent==='Équipe 1' && d.querySelector('#custom-letter .letter-body').textContent==='Souvenir : déjà 2040 !');
+    assert('Lettre principale masquée pendant un clin d’œil', d.getElementById('future-letter').hidden && !d.getElementById('custom-letter').hidden);
+    mode='updated';
+    await waitFor(()=>d.querySelector('#custom-letter h2').textContent.includes('<img'));
+    assert('Mise à jour du mail ouvert sans rechargement', d.querySelector('#custom-letter .letter-sender strong').textContent==='Léa');
+    assert('HTML affiché sans exécution', !d.querySelector('#custom-letter img') && cards()[0].querySelector('b').textContent.includes('<img'));
+    assert('Corps facultatif et retours à la ligne', d.querySelector('#custom-letter .letter-body').textContent==='Bonjour Malo,\n\nUne histoire à raconter.');
+    d.getElementById('back-from-custom').click();
+    assert('Retour depuis le faux mail', d.getElementById('custom-letter').hidden && !d.getElementById('window-outlook').classList.contains('mail-is-open'));
+    d.getElementById('future-mail').click();
+    assert('Lettre originale conservée', !d.getElementById('future-letter').hidden && d.getElementById('custom-letter').hidden);
+    cards()[0].click(); mode='error'; w.dispatchEvent(new w.Event('focus'));
+    await waitFor(()=>status().includes('impossible'));
+    assert('Erreur visible et mails conservés', cards().length===20 && !d.getElementById('custom-letter').hidden);
+    mode='empty'; w.dispatchEvent(new w.Event('focus'));
+    await waitFor(()=>cards().length===0);
+    assert('Mail vidé retiré et lecteur refermé', d.getElementById('custom-letter').hidden);
+    document.getElementById('results').textContent='TOUT OK — '+results.length+' contrôles mails\n'+results.join('\n');
+  } catch(e) { document.getElementById('results').textContent='ÉCHEC : '+e.message+'\n'+results.join('\n'); }
+};
+</script></html>
