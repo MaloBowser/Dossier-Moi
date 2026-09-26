@@ -1,0 +1,44 @@
+<!doctype html><html lang="fr"><meta charset="utf-8"><title>Vérification locale</title>
+<style>body{margin:0}iframe{width:100vw;height:100vh;border:0}pre{position:fixed;inset:0 auto auto 0;background:white;z-index:10}</style>
+<iframe id="app" src="../pages/projets.html"></iframe><pre id="results">EN COURS</pre>
+<script>
+const frame = document.getElementById('app');
+frame.onload = () => {
+  try {
+    const d = frame.contentDocument, w = frame.contentWindow;
+    const results = [];
+    const assert = (name, condition) => { results.push(name + ': ' + (condition ? 'OK' : 'ÉCHEC')); if (!condition) throw new Error(name); };
+    const visible = () => [...d.querySelectorAll('[data-window]')].filter(e => !e.hidden);
+    const click = app => d.querySelector('.taskbar-button[data-app="' + app + '"]').click();
+    assert('Icônes décoratives et trois applications', d.querySelectorAll('.desktop-shortcut').length === 15 && d.querySelectorAll('.taskbar-button').length === 3);
+    assert('Bureau initial', visible().length === 0 && !d.body.classList.contains('has-open-window'));
+    assert('Notification Outlook initiale', [...d.querySelectorAll('.notification-badge')].every(e => !e.hidden));
+    click('outlook');
+    assert('Ouverture Outlook', visible().length === 1 && visible()[0].dataset.window === 'outlook');
+    assert('Retour masqué', w.getComputedStyle(d.querySelector('.desktop-return')).display === 'none');
+    assert('Taille plein écran', Math.abs(visible()[0].getBoundingClientRect().width - w.innerWidth) < 2);
+    d.getElementById('future-mail').click();
+    assert('Lettre affichée', !d.getElementById('future-letter').hidden);
+    assert('Notifications effacées', [...d.querySelectorAll('.notification-badge, .unread-count')].every(e => e.hidden));
+    d.getElementById('back-to-mails').click();
+    assert('Retour à la liste', d.getElementById('future-letter').hidden);
+    click('vscode');
+    assert('Une seule fenêtre visible', visible().length === 1 && visible()[0].dataset.window === 'vscode');
+    click('outlook');
+    assert('Bascule vers Outlook', visible().length === 1 && visible()[0].dataset.window === 'outlook');
+    click('outlook');
+    assert('Réduction depuis la barre', visible().length === 0 && !d.body.classList.contains('has-open-window'));
+    assert('Retour restauré', w.getComputedStyle(d.querySelector('.desktop-return')).display !== 'none');
+    click('bricklink');
+    d.querySelector('#window-bricklink [data-close]').click();
+    assert('Fermeture BrickLink', visible().length === 0 && !d.querySelector('.taskbar-button[data-app="bricklink"]').classList.contains('is-running'));
+    click('vscode');
+    d.dispatchEvent(new w.KeyboardEvent('keydown', { key: 'Escape', bubbles: true }));
+    assert('Échap revient au bureau', visible().length === 0);
+    const expectedTime = new Date().toLocaleTimeString('fr-FR', { hour:'2-digit', minute:'2-digit' });
+    assert('Heure réelle', d.getElementById('desktop-time').textContent === expectedTime);
+    assert('Aucune ressource distante', ![...d.querySelectorAll('script[src], link[href], iframe[src]')].some(e => /^https?:/.test(e.getAttribute('src') || e.getAttribute('href'))));
+    document.getElementById('results').textContent = 'TOUT OK — ' + results.length + ' contrôles\n' + results.join('\n');
+  } catch(e) { document.getElementById('results').textContent = 'ÉCHEC : ' + e.message; }
+};
+</script></html>

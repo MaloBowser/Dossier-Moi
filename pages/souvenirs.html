@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="La carte des souvenirs et des voyages de mon Dossier Moi.">
+    <meta name="theme-color" content="#263f48">
+    <title>Souvenirs autour d’une image — Dossier Moi</title>
+    <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+    <link rel="stylesheet" href="../style.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@18.0.14/lib/marked.umd.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.15/dist/purify.min.js" defer></script>
+    <script src="../script.js" defer></script>
+</head>
+<body class="content-page theme-souvenirs memory-map-page">
+    <a class="skip-link" href="#souvenir-map">Aller directement à la carte</a>
+
+    <div class="map-page-shell">
+        <header class="map-page-header" id="map-page-header">
+            <div class="map-page-heading">
+                <p class="map-page-kicker">Carnet de voyage</p>
+                <h1>Souvenirs autour d'une image</h1>
+                <p class="map-page-intro">Une carte des lieux qui ont laissé une trace. Cliquez sur un repère pour ouvrir le souvenir qui lui est associé.</p>
+            </div>
+            <a class="home-link map-home-link" href="../index.html" aria-label="Revenir à l'accueil de Dossier Moi">
+                <span aria-hidden="true">←</span>
+                Retour au dossier
+            </a>
+        </header>
+
+        <main class="map-journal" id="map-view" aria-label="Carte de mes souvenirs">
+            <div class="map-journal__tape map-journal__tape--left" aria-hidden="true"></div>
+            <div class="map-journal__tape map-journal__tape--right" aria-hidden="true"></div>
+
+            <div class="map-toolbar" aria-hidden="true">
+                <span><i class="map-toolbar__pin"></i> Mes lieux</span>
+                <span class="map-toolbar__hint">Déplacez la carte et utilisez + / − pour zoomer</span>
+            </div>
+
+            <div id="souvenir-map" class="souvenir-map" role="region" aria-label="Carte interactive de mes souvenirs"></div>
+
+            <noscript>
+                <p class="map-error">La carte interactive a besoin de JavaScript pour s’afficher.</p>
+            </noscript>
+        </main>
+
+        <main class="memory-detail" id="memory-detail" aria-live="polite" hidden>
+            <button class="memory-detail__back" id="memory-detail-back" type="button">
+                <span aria-hidden="true">←</span>
+                Retour à la carte
+            </button>
+            <article class="memory-detail__sheet" id="memory-detail-content" aria-labelledby="memory-detail-place"></article>
+        </main>
+    </div>
+
+    <div class="photo-album" id="photo-album" hidden>
+        <button class="photo-album__backdrop" type="button" data-close-album aria-label="Fermer l’album photo"></button>
+        <section class="photo-album__window" role="dialog" aria-modal="true" aria-labelledby="photo-album-title" tabindex="-1">
+            <button class="photo-album__close" id="photo-album-close" type="button" aria-label="Fermer l’album photo">×</button>
+            <p class="photo-album__eyebrow">Album photo</p>
+            <h2 class="photo-album__title" id="photo-album-title"></h2>
+            <div class="photo-album__gallery" id="photo-album-gallery"></div>
+        </section>
+    </div>
+</body>
+</html>
