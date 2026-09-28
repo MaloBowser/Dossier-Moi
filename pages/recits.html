@@ -1,30 +1,36 @@
 <!doctype html>
 <html lang="fr">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Récits brefs de souvenirs — Dossier Moi</title>
-    <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
-    <link rel="stylesheet" href="../style.css">
-    <script src="https://cdn.jsdelivr.net/npm/marked@18.0.14/lib/marked.umd.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.15/dist/purify.min.js" defer></script>
+    <link rel="icon" href="../images/favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="../style.css">
     <script src="../script.js" defer></script>
 </head>
-<body class="content-page markdown-page">
-    <a class="skip-link" href="#markdown-text">Aller au texte</a>
-    <div class="reading-shell">
-        <div class="page-topbar">
-            <a class="home-link" href="../index.html"><span aria-hidden="true">←</span> Retour au dossier</a>
-            <span class="chapter-count">Partie 01</span>
-        </div>
-        <main class="paper-sheet">
-            <header class="chapter-hero">
-                <span class="chapter-number" aria-hidden="true">01</span>
-                <p class="chapter-kicker">Dossier Moi</p>
-                <h1>Récits brefs de souvenirs</h1>
-            </header>
-            <article class="markdown-document markdown-content" id="markdown-text" data-markdown-source="../textes/recits/contenu.md"></article>
-        </main>
-    </div>
+<body class="journal-page">
+    <a class="journal-home" href="../index.html">← Retour au Dossier Moi</a>
+    <main class="journal-stage" aria-labelledby="journal-title">
+        <section class="closed-journal" id="closed-journal">
+            <div class="journal-rings" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="journal-cover">
+                <small>Dossier Moi · Partie 01</small><h1 id="journal-title">Récits brefs<br>de souvenirs</h1><p>Carnet personnel de Malo</p>
+                <button class="journal-lock" id="journal-lock" type="button" aria-label="Déverrouiller et ouvrir le carnet"><span class="lock-shackle"></span><span class="lock-body">●</span><b>Ouvrir le carnet</b></button>
+            </div>
+        </section>
+        <section class="open-journal" id="open-journal" hidden aria-label="Carnet ouvert">
+            <div class="journal-spine" aria-hidden="true"></div>
+            <article class="journal-paper journal-paper--left">
+                <p class="journal-label">Récit bref · page <span id="journal-page-number">1</span>/3</p>
+                <div class="journal-page-copy is-active" data-journal-page="1"><h2>Le début du souvenir</h2><p>[Texte à ajouter — introduction, contexte et début de l’histoire]</p><div class="photo-slots"><span>[Photo à ajouter]</span><span>[Photo à ajouter]</span></div></div>
+                <div class="journal-page-copy" data-journal-page="2" hidden><h2>Au cœur du souvenir</h2><p>[Texte à ajouter — partie principale du souvenir]</p><div class="photo-slots photo-slots--single"><span>[Photo à ajouter]</span></div></div>
+                <div class="journal-page-copy" data-journal-page="3" hidden><h2>Ce que j’en garde</h2><p>[Texte à ajouter — fin du souvenir et réflexion personnelle]</p><div class="photo-slots"><span>[Photo à ajouter]</span><span>[Photo à ajouter]</span></div></div>
+            </article>
+            <aside class="journal-paper journal-paper--right" aria-label="Notes et photographies">
+                <p class="handwritten-note">Les images viendront se glisser ici, sans jamais cacher le récit.</p>
+                <div class="large-photo-slot">[Photo à ajouter]</div>
+                <p class="journal-quote">« Un souvenir se raconte aussi dans les petits détails. »</p>
+            </aside>
+            <nav class="journal-nav" aria-label="Navigation dans le carnet"><button id="journal-prev" type="button" disabled>← Page précédente</button><button id="journal-next" type="button">Page suivante →</button></nav>
+        </section>
+    </main>
 </body>
 </html>

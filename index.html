@@ -11,7 +11,32 @@
     <script src="script.js" defer></script>
 </head>
 <body>
-    <div class="page-shell">
+    <section class="intro" id="intro" aria-labelledby="intro-title">
+        <div class="brick-scene" id="brick-scene">
+            <div class="brick-frame" aria-hidden="true">
+                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+            </div>
+            <div class="intro-card">
+                <p class="intro-card__eyebrow">Une construction très personnelle</p>
+                <h1 id="intro-title">Bienvenue&nbsp;!</h1>
+                <p>Voici mon «&nbsp;Dossier Moi&nbsp;».</p>
+                <p>J’ai souhaité le présenter de cette façon car l’une de mes multiples passions est la programmation. Je programme notamment des jeux ainsi que des sites web.</p>
+                <p>Si vous le souhaitez, vous pourrez d’ailleurs découvrir mon site de jeux ici&nbsp;: <span class="pending-link" title="L’adresse sera ajoutée prochainement">[LIEN À AJOUTER]</span></p>
+                <p>J’espère que vous apprécierez ce moment.</p>
+                <p>Maintenant, je vous ouvre la porte vers mon univers…</p>
+                <p><strong>Bonne visite&nbsp;!</strong></p>
+                <button class="enter-button" id="enter-universe" type="button">Entrer dans mon univers</button>
+            </div>
+            <div class="brick-door" aria-hidden="true">
+                <div class="brick-door__frame">
+                    <div class="brick-door__leaf"><span></span></div>
+                </div>
+                <p>Entrez…</p>
+            </div>
+        </div>
+    </section>
+
+    <div class="page-shell home-world" id="home-world" aria-hidden="true" inert>
         <header class="hero" aria-labelledby="page-title">
             <p class="hero__eyebrow">Un parcours pour mieux me connaître</p>
             <div class="hero__paper">

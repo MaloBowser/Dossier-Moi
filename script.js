@@ -14,6 +14,107 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     window.addEventListener('DOMContentLoaded', () => requestAnimationFrame(revealChapters), { once: true });
 }
 
+/* Introduction : construction, porte et arrivée sur le bureau. */
+const intro = document.querySelector('#intro');
+const enterUniverse = document.querySelector('#enter-universe');
+const homeWorld = document.querySelector('#home-world');
+
+if (intro && enterUniverse && homeWorld) {
+    enterUniverse.addEventListener('click', () => {
+        if (intro.classList.contains('is-entering')) return;
+        intro.classList.add('is-entering');
+        enterUniverse.disabled = true;
+
+        window.setTimeout(() => intro.classList.add('is-crossing'), 1150);
+        window.setTimeout(() => {
+            homeWorld.setAttribute('aria-hidden', 'false');
+            homeWorld.removeAttribute('inert');
+            intro.classList.add('is-complete');
+            document.querySelector('.chapter')?.focus({ preventScroll: true });
+        }, 1950);
+    });
+}
+
+/* Carnet : cadenas puis navigation en trois pages. */
+const journalLock = document.querySelector('#journal-lock');
+const closedJournal = document.querySelector('#closed-journal');
+const openJournal = document.querySelector('#open-journal');
+
+if (journalLock && closedJournal && openJournal) {
+    let journalPage = 1;
+    const previous = document.querySelector('#journal-prev');
+    const next = document.querySelector('#journal-next');
+    const pageNumber = document.querySelector('#journal-page-number');
+    const pages = [...document.querySelectorAll('[data-journal-page]')];
+
+    const showJournalPage = (number) => {
+        journalPage = Math.max(1, Math.min(3, number));
+        pages.forEach((page) => {
+            const active = Number(page.dataset.journalPage) === journalPage;
+            page.hidden = !active;
+            page.classList.toggle('is-active', active);
+            if (active) {
+                page.classList.remove('is-turning');
+                requestAnimationFrame(() => page.classList.add('is-turning'));
+            }
+        });
+        pageNumber.textContent = journalPage;
+        previous.disabled = journalPage === 1;
+        next.disabled = journalPage === 3;
+    };
+
+    journalLock.addEventListener('click', () => {
+        journalLock.classList.add('is-unlocked');
+        window.setTimeout(() => closedJournal.classList.add('is-opening'), 350);
+        window.setTimeout(() => {
+            closedJournal.hidden = true;
+            openJournal.hidden = false;
+            next.focus({ preventScroll: true });
+        }, 900);
+    }, { once: true });
+    previous.addEventListener('click', () => showJournalPage(journalPage - 1));
+    next.addEventListener('click', () => showJournalPage(journalPage + 1));
+}
+
+/* Lecteur d'interview : l'affiche d'attente disparaît quand le MP4 existe. */
+const interviewVideo = document.querySelector('#interview-video');
+const videoPlaceholder = document.querySelector('#video-placeholder');
+if (interviewVideo && videoPlaceholder) {
+    interviewVideo.addEventListener('loadedmetadata', () => { videoPlaceholder.hidden = true; });
+    interviewVideo.addEventListener('error', () => { videoPlaceholder.hidden = false; });
+}
+
+/* Rêverie : entrer dans le nuage puis revenir dans la chambre. */
+const bedroom = document.querySelector('#bedroom');
+const dreamWorld = document.querySelector('#dream-world');
+const enterDream = document.querySelector('#enter-dream');
+const wakeUp = document.querySelector('#wake-up');
+
+if (bedroom && dreamWorld && enterDream && wakeUp) {
+    const bubbles = bedroom.querySelector('.thought-bubbles');
+    enterDream.addEventListener('click', () => {
+        bedroom.classList.add('is-dreaming');
+        bubbles.classList.add('is-expanding');
+        window.setTimeout(() => {
+            bedroom.hidden = true;
+            dreamWorld.hidden = false;
+            wakeUp.focus({ preventScroll: true });
+        }, 950);
+    });
+    wakeUp.addEventListener('click', () => {
+        dreamWorld.style.opacity = '0';
+        dreamWorld.style.transition = 'opacity .5s';
+        window.setTimeout(() => {
+            dreamWorld.hidden = true;
+            dreamWorld.style.opacity = '';
+            bedroom.hidden = false;
+            bedroom.classList.remove('is-dreaming');
+            bubbles.classList.remove('is-expanding');
+            enterDream.focus({ preventScroll: true });
+        }, 500);
+    });
+}
+
 const renderMarkdownFile = async (container, source, emptyMessage = 'Texte à ajouter') => {
     container.classList.add('is-loading');
     container.textContent = 'Chargement du texte…';

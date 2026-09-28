@@ -306,7 +306,7 @@
     document.addEventListener('visibilitychange', updateClock);
 
     // Liens pratiques pour ouvrir une application lors d'une présentation.
-    const initialApp = window.location.hash.slice(1);
+    const initialApp = window.location.hash.slice(1) || new URLSearchParams(window.location.search).get('app');
     if (initialApp === 'lettre') {
         openApp('outlook');
         mailButton.click();
