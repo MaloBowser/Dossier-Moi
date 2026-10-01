@@ -226,7 +226,7 @@
         customLetter.querySelector('h2').textContent = mail.subject;
         customLetter.querySelector('.letter-sender strong').textContent = mail.sender;
         customLetter.querySelector('.profile-avatar').textContent = mail.sender.slice(0, 2).toUpperCase();
-        customLetter.querySelector('.letter-body').textContent = mail.body || 'Ce message n’a pas encore de contenu.';
+        window.DossierMarkdown.render(customLetter.querySelector('.letter-body'), mail.body || '', `../textes/projets/mails/${mail.id}.md`, 'Ce message n’a pas encore de contenu.');
         if (focus) {
             document.querySelector('.reading-pane').scrollTop = 0;
             customLetter.querySelector('h2').focus({ preventScroll: true });

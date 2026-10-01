@@ -3,7 +3,7 @@
 - Page : `pages/projets.html`.
 - Présentation : `projets.css`.
 - Applications, raccourcis et horloge : `projets.js`.
-- Lettre à remplacer : paragraphes de `.letter-body` dans le HTML.
+- Lettre : écris dans `textes/projets/contenu.md`. Le contenu s’affiche directement dans le corps du mail et se met à jour sous cinq secondes après enregistrement.
 - Aperçu fictif dans VS Code : `pages/apercu-dossier.html`.
 - Le bouton retour apparaît seulement sur le bureau. Cliquer à nouveau sur une
   icône de la barre des tâches ou appuyer sur Échap réduit l’application.

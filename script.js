@@ -14,24 +14,73 @@ if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     window.addEventListener('DOMContentLoaded', () => requestAnimationFrame(revealChapters), { once: true });
 }
 
-/* Introduction : construction, porte et arrivée sur le bureau. */
+/* Introduction : le mur s'écarte et révèle directement le bureau. */
 const intro = document.querySelector('#intro');
 const enterUniverse = document.querySelector('#enter-universe');
 const homeWorld = document.querySelector('#home-world');
 
 if (intro && enterUniverse && homeWorld) {
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const replay = document.querySelector('#replay-intro');
+    const wall = intro.querySelector('.brick-wall');
+    const showHome = (focus = false) => {
+        intro.hidden = true;
+        intro.inert = true;
+        homeWorld.setAttribute('aria-hidden', 'false');
+        homeWorld.inert = false;
+        document.documentElement.classList.add('has-entered');
+        document.body.classList.remove('entrance-active', 'entrance-revealing');
+        if (focus) document.querySelector('.chapter')?.focus({ preventScroll: true });
+    };
+    const buildWall = () => {
+        if (wall.dataset.built) return;
+        wall.dataset.built = 'true';
+        wall.querySelectorAll('.brick-wall__half').forEach((half, side) => {
+            for (let row = 0; row < 10; row++) {
+                const course = document.createElement('div');
+                course.className = 'brick-wall__row';
+                for (let col = 0; col < 5; col++) {
+                    const brick = document.createElement('i');
+                    brick.className = `wall-brick wall-brick--${(row * 3 + col + side * 2) % 5}`;
+                    brick.style.setProperty('--assembly-delay', `${(9 - row) * 35 + col * 22}ms`);
+                    course.append(brick);
+                }
+                half.append(course);
+            }
+        });
+    };
+    const showIntro = () => {
+        buildWall();
+        document.documentElement.classList.remove('has-entered');
+        document.body.classList.add('entrance-active');
+        intro.classList.remove('is-entering');
+        intro.hidden = false;
+        intro.inert = false;
+        homeWorld.inert = true;
+        homeWorld.setAttribute('aria-hidden', 'true');
+        enterUniverse.disabled = false;
+    };
+    if (window.dossierEntrance?.skip) showHome();
+    else showIntro();
+
     enterUniverse.addEventListener('click', () => {
         if (intro.classList.contains('is-entering')) return;
+        window.dossierEntrance?.remember();
+        // Le hash assure aussi un retour sans introduction si le stockage est bloqué.
+        try { history.replaceState(history.state, '', '#accueil'); } catch { /* file: */ }
         intro.classList.add('is-entering');
         enterUniverse.disabled = true;
-
-        window.setTimeout(() => intro.classList.add('is-crossing'), 1150);
-        window.setTimeout(() => {
-            homeWorld.setAttribute('aria-hidden', 'false');
-            homeWorld.removeAttribute('inert');
-            intro.classList.add('is-complete');
-            document.querySelector('.chapter')?.focus({ preventScroll: true });
-        }, 1950);
+        document.body.classList.add('entrance-revealing');
+        window.setTimeout(() => showHome(true), reducedMotion.matches ? 80 : 2250);
+    });
+    replay?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        showIntro();
+        intro.scrollTop = 0;
+        enterUniverse.focus({ preventScroll: true });
+    });
+    window.addEventListener('pageshow', event => {
+        if (event.persisted && (location.hash === '#accueil' || intro.classList.contains('is-entering'))) showHome();
     });
 }
 
@@ -46,34 +95,65 @@ if (journalLock && closedJournal && openJournal) {
     const next = document.querySelector('#journal-next');
     const pageNumber = document.querySelector('#journal-page-number');
     const pages = [...document.querySelectorAll('[data-journal-page]')];
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let turning = false;
 
     const showJournalPage = (number) => {
-        journalPage = Math.max(1, Math.min(3, number));
-        pages.forEach((page) => {
-            const active = Number(page.dataset.journalPage) === journalPage;
-            page.hidden = !active;
-            page.classList.toggle('is-active', active);
-            if (active) {
-                page.classList.remove('is-turning');
-                requestAnimationFrame(() => page.classList.add('is-turning'));
-            }
-        });
-        pageNumber.textContent = journalPage;
-        previous.disabled = journalPage === 1;
-        next.disabled = journalPage === 3;
+        const target = Math.max(1, Math.min(3, number));
+        if (turning || target === journalPage) return;
+        turning = true;
+        const direction = target > journalPage ? 'is-turning-next' : 'is-turning-prev';
+        const updateSpread = () => {
+            journalPage = target;
+            // Une partie = un couple texte/photos. Les deux côtés changent ensemble.
+            pages.forEach(page => {
+                const active = Number(page.dataset.journalPage) === journalPage;
+                page.hidden = !active;
+                page.classList.toggle('is-active', active);
+            });
+            pageNumber.textContent = journalPage;
+        };
+        const finishTurn = () => {
+            openJournal.classList.remove(direction);
+            openJournal.removeAttribute('aria-busy');
+            previous.disabled = journalPage === 1;
+            next.disabled = journalPage === 3;
+            previous.removeAttribute('aria-disabled');
+            next.removeAttribute('aria-disabled');
+            if (document.activeElement === previous && previous.disabled) next.focus({ preventScroll: true });
+            if (document.activeElement === next && next.disabled) previous.focus({ preventScroll: true });
+            turning = false;
+        };
+        if (reducedMotion.matches) {
+            updateSpread();
+            finishTurn();
+            return;
+        }
+        previous.setAttribute('aria-disabled', 'true');
+        next.setAttribute('aria-disabled', 'true');
+        openJournal.setAttribute('aria-busy', 'true');
+        openJournal.classList.add(direction);
+        window.setTimeout(updateSpread, 320);
+        window.setTimeout(finishTurn, 680);
     };
 
     journalLock.addEventListener('click', () => {
         journalLock.classList.add('is-unlocked');
-        window.setTimeout(() => closedJournal.classList.add('is-opening'), 350);
+        journalLock.disabled = true;
+        window.setTimeout(() => closedJournal.classList.add('is-opening'), reducedMotion.matches ? 0 : 350);
         window.setTimeout(() => {
             closedJournal.hidden = true;
             openJournal.hidden = false;
             next.focus({ preventScroll: true });
-        }, 900);
+        }, reducedMotion.matches ? 0 : 900);
     }, { once: true });
     previous.addEventListener('click', () => showJournalPage(journalPage - 1));
     next.addEventListener('click', () => showJournalPage(journalPage + 1));
+    openJournal.addEventListener('keydown', event => {
+        if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+        event.preventDefault();
+        showJournalPage(journalPage + (event.key === 'ArrowRight' ? 1 : -1));
+    });
 }
 
 /* Lecteur d'interview : l'affiche d'attente disparaît quand le MP4 existe. */
@@ -115,49 +195,10 @@ if (bedroom && dreamWorld && enterDream && wakeUp) {
     });
 }
 
-const renderMarkdownFile = async (container, source, emptyMessage = 'Texte à ajouter') => {
-    container.classList.add('is-loading');
+const renderMarkdownFile = (container, source, emptyMessage = 'Texte à ajouter') => {
     container.textContent = 'Chargement du texte…';
-
-    try {
-        const response = await fetch(source, { cache: 'no-store' });
-
-        if (!response.ok) {
-            throw new Error(`Erreur ${response.status}`);
-        }
-
-        const markdownText = await response.text();
-
-        if (typeof marked === 'undefined' || typeof DOMPurify === 'undefined') {
-            throw new Error('Le lecteur Markdown est indisponible.');
-        }
-
-        const renderedHtml = marked.parse(markdownText, { breaks: true });
-        container.innerHTML = DOMPurify.sanitize(renderedHtml);
-        container.classList.remove('is-loading');
-
-        const hasVisibleContent = container.textContent.trim() || container.querySelector('img, hr, blockquote, ul, ol');
-
-        if (!hasVisibleContent) {
-            container.textContent = emptyMessage;
-            container.classList.add('markdown-content--empty');
-        }
-    } catch (error) {
-        container.classList.remove('is-loading');
-        container.classList.add('markdown-content--error');
-        container.textContent = 'Le texte Markdown n’a pas pu être chargé. Ouvrez le site depuis un serveur local, puis actualisez la page.';
-    }
+    return window.DossierMarkdown.mount(container, source, emptyMessage);
 };
-
-const markdownPageContent = document.querySelector('[data-markdown-source]');
-
-if (markdownPageContent) {
-    renderMarkdownFile(
-        markdownPageContent,
-        markdownPageContent.dataset.markdownSource,
-        'Ce texte est encore vide.'
-    );
-}
 
 /*
  * Souvenirs autour d'une image

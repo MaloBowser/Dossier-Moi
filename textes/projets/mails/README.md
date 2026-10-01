@@ -38,8 +38,10 @@ Voici le contenu complet de mon faux mail.
 À bientôt !
 ```
 
-Le texte est affiché tel quel, avec ses retours à la ligne. Les balises HTML
-et la mise en forme Markdown ne sont pas interprétées : aucun code n’est exécuté.
+Le corps du mail interprète le Markdown : paragraphes, **gras**, *italiques*,
+listes, liens et images apparaissent directement dans le mail. Les chemins
+d’images sont relatifs au fichier `.md`. Le contenu est nettoyé avant affichage
+pour ne pas exécuter de scripts. Les champs De, Objet et Début restent en texte simple.
 
 ## Ouvrir le site
 

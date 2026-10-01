@@ -8,7 +8,11 @@
     <title>Projet, ouverture sur l’avenir — Dossier Moi</title>
     <link rel="icon" href="../images/favicon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="../projets.css">
-    <script src="../projets.js" defer></script>
+    <link rel="stylesheet" href="../contenus.css">
+<script src="../assets/vendor/marked.umd.js" defer></script>
+<script src="../assets/vendor/purify.min.js" defer></script>
+<script src="../contenus.js" defer></script>
+<script src="../projets.js" defer></script>
 </head>
 <body>
     <!-- Symboles intégrés : les icônes fonctionnent aussi en ouvrant le fichier local. -->
@@ -81,7 +85,7 @@
 <symbol id="powerpoint" viewBox="0 0 24 24"><rect x="7" y="2" width="16" height="20" rx="2" fill="#d65e40" opacity=".6"/><rect x="1" y="6" width="14" height="14" rx="1" fill="#d65e40"/><text x="3" y="16" fill="white" font-family="Arial" font-size="10">P</text></symbol>
 </svg>
     <h1 class="sr-only">Projet, ouverture sur l’avenir : le bureau de Malo en 2040</h1>
-    <a class="desktop-return" href="../index.html" title="Retour au dossier moi" aria-label="Retour au dossier moi">
+    <a class="desktop-return" href="../index.html#accueil" title="Retour au dossier moi" aria-label="Retour au dossier moi">
         <span data-icon="arrow-left"></span>
     </a>
 
@@ -170,8 +174,8 @@
                                     <h2 tabindex="-1">À mon moi de 2040</h2>
                                     <div class="letter-sender"><span class="profile-avatar">M</span><p><strong>Malo 2026</strong><small>À : Malo 2040</small></p><time datetime="2040-05-18T09:42">18 mai 2040, 09:42</time></div>
                                 </header>
-                                <!-- Remplacer ces paragraphes par la lettre définitive. -->
-                                <div class="letter-body"><p>Bonjour Malo,</p><p class="letter-placeholder">Le texte de ma lettre à mon moi de 2040 sera ajouté ici.</p><p>À bientôt,<br>Malo, en 2026</p></div>
+                                <!-- Le corps du mail suit directement le fichier Markdown. -->
+                                <div class="letter-body markdown-content" data-markdown-source="../textes/projets/contenu.md">Chargement du texte…</div>
                             </div>
                             <div class="future-letter custom-letter" id="custom-letter" hidden>
                                 <button class="back-to-mails" id="back-from-custom" type="button"><span data-icon="arrow-left"></span>Boîte de réception</button>

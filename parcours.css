@@ -1,0 +1,141 @@
+/* Entrée et carnet : les animations accompagnent le passage et la lecture. */
+html.has-entered #intro { display: none; }
+html.has-entered #home-world { opacity: 1; filter: none; transform: none; }
+body.entrance-active { overflow: hidden; }
+.intro { background: transparent; perspective: 1600px; }
+.intro::before { display: none; }
+.brick-scene { z-index: 2; margin: 20px auto; }
+.intro-card {
+    position: relative;
+    border: 1px solid #fcf6e7;
+    border-radius: 6px;
+    background: #faf4e9;
+    box-shadow: 0 2px 0 #fff inset, 0 8px 0 #c6b495, 0 32px 65px #24140980;
+    opacity: 1;
+    animation: welcome-appear .6s .45s backwards;
+    transition: opacity .28s ease, transform .4s ease;
+}
+.intro-card::before, .intro-card::after {
+    content: ""; position: absolute; top: 15px; width: 7px; height: 7px;
+    border-radius: 50%; background: #b69a6e; box-shadow: inset 0 1px 3px #594126;
+}
+.intro-card::before { left: 15px; }
+.intro-card::after { right: 15px; }
+@keyframes welcome-appear { from { opacity: 0; transform: translateY(20px); } }
+
+.brick-wall { position: fixed; inset: 0; perspective: 1600px; pointer-events: none; }
+.brick-wall__half {
+    position: absolute; top: -8px; bottom: -8px; width: calc(50% + 1px);
+    display: flex; flex-direction: column; overflow: hidden;
+    background: #655044; border: 1px solid #604330;
+    transition: transform 1.8s .35s cubic-bezier(.65, 0, .2, 1);
+    backface-visibility: hidden;
+}
+.brick-wall__half::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 20%, #281c175e 110%);
+    box-shadow: inset 0 2px 20px #2d1f1630;
+}
+.brick-wall__half--left { left: 0; transform-origin: left center; box-shadow: 12px 0 30px #150d0870; }
+.brick-wall__half--right { right: 0; transform-origin: right center; box-shadow: -12px 0 30px #150d0870; }
+.brick-wall__row { display: flex; flex: 1; min-height: 0; gap: 5px; padding: 4px 0; width: 125%; }
+.brick-wall__row:nth-child(even) { margin-left: -12.5%; }
+.wall-brick {
+    position: relative; display: block; flex: 1; margin: 0; border-radius: 5px 5px 7px 7px;
+    background: linear-gradient(170deg, #ffffff20, transparent 60%), var(--brick-color);
+    border: 1px solid #ffffff20;
+    box-shadow: inset 0 3px 0 #ffffff35, inset 0 -8px 0 #00000022, 0 3px 4px #24171070;
+    animation: wall-assemble .55s var(--assembly-delay) cubic-bezier(.2,.7,.2,1) backwards;
+}
+.wall-brick::before, .wall-brick::after {
+    content: ""; position: absolute; top: -7px; width: 24%; height: 12px;
+    border-radius: 50% 50% 25% 25%; background: var(--brick-color);
+    box-shadow: inset 0 3px 2px #ffffff40, 0 2px 3px #00000025;
+}
+.wall-brick::before { left: 13%; }
+.wall-brick::after { right: 13%; }
+.wall-brick--0 { --brick-color: #a85c43; }
+.wall-brick--1 { --brick-color: #be9149; }
+.wall-brick--2 { --brick-color: #527b80; }
+.wall-brick--3 { --brick-color: #ccbaa0; }
+.wall-brick--4 { --brick-color: #8c4b39; }
+@keyframes wall-assemble { from { opacity: 0; transform: translateY(-36px); } }
+.intro.is-entering .intro-card { animation: none; opacity: 0; transform: translateY(12px) scale(.96); pointer-events: none; }
+.intro.is-entering .brick-wall__half--left { transform: translate3d(-108%, 0, 160px) rotateY(9deg); }
+.intro.is-entering .brick-wall__half--right { transform: translate3d(108%, 0, 160px) rotateY(-9deg); }
+.intro.is-entering { overflow: hidden; }
+.home-world { transform-origin: 50% 35%; }
+body.entrance-active .home-world { filter: blur(6px); transform: scale(.91); opacity: .65; }
+body.entrance-revealing .home-world { filter: blur(0); transform: scale(1); opacity: 1; transition: transform 1.8s .35s ease, filter 1.5s .35s ease, opacity 1.5s .35s ease; }
+.entrance-replay { margin: 65px auto -70px; text-align: center; }
+.entrance-replay button { padding: 12px 20px; min-height: 44px; color: #f4eadb; border: 1px solid #bfa88780; border-radius: 3px; background: #231c16dc; cursor: pointer; font: .85rem var(--hand); }
+.entrance-replay button:hover { background: #453426; }
+.enter-button:focus-visible, .entrance-replay button:focus-visible, .journal-nav button:focus-visible, .journal-lock:focus-visible { outline: 3px solid #e8b363; outline-offset: 6px; }
+
+/* Chaque partie possède sa page de récit et sa page de photos. */
+.open-journal {
+    width: min(1180px, 100%); perspective: 1800px; isolation: isolate;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    border: 8px solid #5e3828; border-radius: 15px;
+    background: #eddfc5;
+    box-shadow: 0 4px 0 #f4ead7, 0 7px 0 #c7b89c, 0 10px 0 #e8dcc6, 0 14px 0 #503023;
+}
+.journal-paper { padding-bottom: 35px; min-width: 0; }
+.journal-paper--left { background: linear-gradient(90deg, transparent 93%, #634a2a25), repeating-linear-gradient(0deg, transparent 0 31px, #53719622 32px), #f4ead7; }
+.journal-paper--right { background: linear-gradient(90deg, #634a2a25, transparent 7%), #f1e5ce; }
+.journal-page-copy h2 { font-size: clamp(1.45rem, 2.7vw, 2.2rem); line-height: 1.4; }
+.journal-paper--right .journal-page-copy > .journal-label { min-height: 0; font: 700 .78rem var(--hand); }
+.journal-paper--right .handwritten-note { min-height: 0; font: 1rem/1.8 var(--hand); }
+.journal-paper--right .photo-slots { margin-top: 55px; margin-bottom: 40px; }
+.journal-paper--right .photo-slots span { min-height: 185px; }
+.journal-spine { bottom: 76px; left: calc(50% - 9px); pointer-events: none; }
+.photo-slots span, .large-photo-slot { position: relative; }
+.photo-slots span::before, .large-photo-slot::before {
+    content: ""; position: absolute; top: -17px; left: 28%; width: 44%; height: 23px;
+    background: #d0b6779c; border-inline: 2px dotted #f3e4b58a; transform: rotate(-4deg);
+}
+.photo-slots span:nth-child(2)::before { transform: rotate(6deg); }
+.journal-photo--last { transform: rotate(-3deg); border-bottom-width: 30px; }
+.journal-nav {
+    position: relative; inset: auto; grid-column: 1 / -1;
+    padding: 15px 24px; min-height: 76px; align-items: center; gap: 16px;
+    background: #eddfc5; border-top: 1px solid #b49a7540;
+}
+.journal-nav button { min-height: 44px; }
+.journal-nav button[aria-disabled="true"] { cursor: wait; }
+.open-journal::after {
+    content: ""; position: absolute; z-index: 6; top: 0; bottom: 76px; left: 50%; width: 50%;
+    pointer-events: none; visibility: hidden; transform-origin: left center;
+    border-radius: 0 8px 8px 0; backface-visibility: visible;
+    background: linear-gradient(90deg, #94785750, transparent 12%, #fff9e860 75%, #98795140), repeating-linear-gradient(0deg, transparent 0 31px, #53719622 32px), #f4ead7;
+    box-shadow: 12px 5px 24px #39251140;
+}
+.open-journal.is-turning-next::after { visibility: visible; animation: sheet-forward .68s ease-in-out both; }
+.open-journal.is-turning-prev::after { visibility: visible; animation: sheet-backward .68s ease-in-out both; }
+@keyframes sheet-forward { 0% { opacity: 0; transform: rotateY(0); } 12% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; transform: rotateY(-180deg); } }
+@keyframes sheet-backward { 0% { opacity: 0; transform: rotateY(-180deg); } 12% { opacity: 1; } 88% { opacity: 1; } 100% { opacity: 0; transform: rotateY(0); } }
+
+@media (max-width: 760px) {
+    .intro { padding: 18px 14px; place-items: safe center; }
+    .brick-scene { margin: 0 auto; }
+    .intro-card { padding: 26px 22px; }
+    .intro-card h1 { white-space: normal; }
+    .wall-brick { min-width: 62px; }
+    .brick-wall__row { width: 380px; }
+    .journal-stage { padding: 85px 15px 40px; }
+    .open-journal { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+    .journal-paper--right { display: block; border-top: 1px dashed #b7a185; }
+    .journal-paper { padding: 28px 25px; }
+    .journal-paper--right .photo-slots { margin-top: 25px; }
+    .journal-nav { position: sticky; bottom: 0; padding: 12px; gap: 10px; min-height: 70px; }
+    .journal-nav button { flex: 1; font-size: .72rem; padding-inline: 8px; }
+    .open-journal::after { left: 0; width: 100%; }
+    .journal-cover { padding: 40px 28px; }
+    .journal-cover h1 { white-space: normal; font-size: clamp(2rem, 8vw, 3.2rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .wall-brick, .intro-card { animation: none; }
+    .brick-wall__half, body.entrance-revealing .home-world { transition: none; }
+    .intro.is-entering .brick-wall__half { transform: none; opacity: 0; }
+    .open-journal::after { display: none; }
+}

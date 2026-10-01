@@ -1,0 +1,33 @@
+/* Le texte reste dans l'objet qui le raconte, sans panneau Markdown séparé. */
+.markdown-content { min-width: 0; overflow-wrap: anywhere; line-height: 1.8; }
+.markdown-content > :first-child { margin-top: 0; }
+.markdown-content > :last-child { margin-bottom: 0; }
+.markdown-content p { margin: 0 0 1em; }
+.markdown-content :is(h1,h2,h3,h4) { color: inherit; line-height: 1.35; white-space: normal; margin: 1.3em 0 .6em; }
+.markdown-content h1 { font-size: 1.65em; }
+.markdown-content h2 { font-size: 1.4em; }
+.markdown-content h3 { font-size: 1.2em; }
+.markdown-content :is(ul,ol) { padding-left: 1.5em; }
+.markdown-content li { margin-bottom: .45em; }
+.markdown-content img { display: block; max-width: 100%; height: auto; margin: 1em auto; }
+.markdown-content blockquote { margin: 1em 0; padding: .4em 1em; border-left: 3px solid currentColor; opacity: .85; }
+.markdown-content pre { max-width: 100%; overflow-x: auto; padding: 1em; background: #8881; }
+.markdown-content table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.markdown-content :is(th,td) { border: 1px solid #8885; padding: .5em; }
+.markdown-content a { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+.custom-letter .letter-body.markdown-content { white-space: normal; }
+.journal-page-copy.markdown-content { font: 1.08rem/2 var(--hand); }
+.journal-page-copy.markdown-content > p { min-height: 0; }
+.journal-paper--right .markdown-content img { padding: 10px 10px 28px; background: white; box-shadow: 0 8px 18px #3e2c3840; transform: rotate(-2deg); }
+.journal-paper--right .markdown-content p:nth-child(even) img { transform: rotate(2deg); }
+.section-introduction { margin: 24px 0; }
+.parts-bin.markdown-content { display: block; }
+.parts-bin.markdown-content ul { display: flex; flex-wrap: wrap; gap: 18px; padding: 0; list-style: none; }
+.parts-bin.markdown-content li { position: relative; flex: 1 1 140px; padding: 25px 18px 18px; border-radius: 5px; background: #d94236; color: white; box-shadow: inset 0 -7px #0002; font-weight: 700; }
+.parts-bin.markdown-content li:nth-child(3n+2) { background: #2478b8; }
+.parts-bin.markdown-content li:nth-child(3n) { background: #e5bd2c; color: #222; }
+.parts-bin.markdown-content li::before { content: ''; position: absolute; top: -7px; left: 25%; width: 30px; height: 12px; border-radius: 50%; background: inherit; }
+#manual-use ol { padding-left: 1.8em; }
+#manual-use li { padding: 12px; border: 2px solid #222; background: #f0f0ed; font-weight: 700; }
+.troubleshoot .markdown-content p { display: block; padding: 16px 0; }
+.manual-step > div, .bug-layout > .markdown-content { min-width: 0; }

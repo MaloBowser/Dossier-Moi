@@ -7,15 +7,18 @@
     <meta name="theme-color" content="#171b22">
     <title>Dossier Moi</title>
     <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+    <script src="accueil.js"></script>
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="parcours.css">
     <script src="script.js" defer></script>
 </head>
 <body>
     <section class="intro" id="intro" aria-labelledby="intro-title">
+        <div class="brick-wall" aria-hidden="true">
+            <div class="brick-wall__half brick-wall__half--left"></div>
+            <div class="brick-wall__half brick-wall__half--right"></div>
+        </div>
         <div class="brick-scene" id="brick-scene">
-            <div class="brick-frame" aria-hidden="true">
-                <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-            </div>
             <div class="intro-card">
                 <p class="intro-card__eyebrow">Une construction très personnelle</p>
                 <h1 id="intro-title">Bienvenue&nbsp;!</h1>
@@ -26,12 +29,6 @@
                 <p>Maintenant, je vous ouvre la porte vers mon univers…</p>
                 <p><strong>Bonne visite&nbsp;!</strong></p>
                 <button class="enter-button" id="enter-universe" type="button">Entrer dans mon univers</button>
-            </div>
-            <div class="brick-door" aria-hidden="true">
-                <div class="brick-door__frame">
-                    <div class="brick-door__leaf"><span></span></div>
-                </div>
-                <p>Entrez…</p>
             </div>
         </div>
     </section>
@@ -94,6 +91,7 @@
         <footer class="desk-note" aria-hidden="true">
             <span>Idées</span><span>Souvenirs</span><span>Moi&nbsp;!</span>
         </footer>
+        <div class="entrance-replay"><button id="replay-intro" type="button">Revoir l’introduction</button></div>
     </div>
 </body>
 </html>
