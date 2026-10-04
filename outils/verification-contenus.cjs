@@ -38,8 +38,8 @@ catch { ({ chromium } = createRequire(process.execPath)('playwright')); }
         await page.locator('#back-to-mails').click();
         await page.waitForFunction(()=>document.querySelector('[data-mail-id="mail-01"]')?.textContent.includes('Exemple'), {timeout:8000});
         await page.locator('[data-mail-id="mail-01"]').click();
-        check(await page.locator('#custom-letter .letter-body strong').innerText()==='formaté','Mail secondaire en Markdown');
-        check((await page.locator('#custom-letter .letter-body img').getAttribute('src'))===base+'/images/favicon.svg','Image du mail secondaire');
+        check(!await page.locator('#future-letter').isVisible(), 'Un mail secondaire ne s’ouvre pas');
+        check(await page.locator('#custom-mails button, #custom-mails a').count() === 0, 'Aucun lien ni bouton dans les mails secondaires');
         for (const [name, text, selectors] of [
             ['evaluation','## Mise en route\n- énergie\n## Utilisation recommandée\n1. écouter\n## Performances optimales\nperformance\n## Risque de bug\nfatigue\n## Dépannage\nrepos\n## Évolution\nprogrès', {'#manual-start':'énergie','#manual-use':'écouter','#manual-performance':'performance','#manual-bugs':'fatigue','#manual-repair':'repos','#manual-update':'progrès'}],
             ['affrontement','## Leur jugement\nTémoignage test\n## Ma réaction\nRéaction test', {'#interview-testimony':'Témoignage test','#interview-reaction':'Réaction test'}],

@@ -1,18 +1,17 @@
-/* Lu avant le CSS : aucun flash de l'introduction lors d'un retour au dossier.
-   Seul un indicateur de visite est enregistré, localement dans ce navigateur. */
+/* Une nouvelle visite commence par l'introduction.
+   Seul le retour à une entrée d'historique déjà ouverte évite de la rejouer. */
 (() => {
-    const root = new URL('.', window.location.href).pathname;
-    const key = `dossier-moi:entree:${root}`;
-    const stores = ['localStorage', 'sessionStorage'];
-    const seen = () => stores.some(name => {
-        try { return window[name].getItem(key) === 'oui'; }
-        catch { return false; }
-    });
-    const remember = () => stores.forEach(name => {
-        try { window[name].setItem(key, 'oui'); }
-        catch { /* Les liens #accueil assurent aussi le retour sans introduction. */ }
-    });
-    const skip = window.location.hash === '#accueil' || seen();
+    const navigation = performance.getEntriesByType('navigation')[0]?.type;
+    const restoring = navigation === 'reload' || navigation === 'back_forward';
+    const skip = location.hash === '#accueil' || (restoring && history.state?.dossierHome === true);
+    const remember = () => {
+        try {
+            // Garder un lien partageable sans #accueil, afin de revoir l'intro à la prochaine visite.
+            const url = location.hash === '#accueil' ? location.pathname + location.search : location.href;
+            history.replaceState({ ...history.state, dossierHome: true }, '', url);
+        } catch { /* Les liens de retour restent utilisables si l'historique est indisponible. */ }
+    };
+    if (skip) remember();
     document.documentElement.classList.toggle('has-entered', skip);
     window.dossierEntrance = { skip, remember };
 })();

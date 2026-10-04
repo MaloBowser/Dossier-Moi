@@ -45,7 +45,8 @@ catch { ({ chromium } = createRequire(process.execPath)('playwright')); }
                 }
                 await page.locator('#intro').waitFor({state:'hidden', timeout:3000});
                 check(!await page.locator('#home-world').evaluate(el => el.inert), 'Bureau accessible');
-                check(await page.evaluate(() => localStorage.getItem(`dossier-moi:entree:${new URL('.',location.href).pathname}`)) === 'oui', 'Entrée mémorisée');
+                check(await page.evaluate(() => history.state?.dossierHome) === true, 'Entrée mémorisée seulement dans l’historique');
+                check(!page.url().includes('#accueil'), 'Lien partageable sans marqueur de retour');
                 await page.reload();
                 check(!await page.locator('#intro').isVisible(), 'Introduction masquée après rechargement');
                 await page.locator('#replay-intro').click();
@@ -83,11 +84,23 @@ catch { ({ chromium } = createRequire(process.execPath)('playwright')); }
                 check(await spread() === first, 'Retour clavier restaure la première double page');
                 check(await page.locator('#journal-prev').isDisabled(), 'Limite de début');
                 await page.locator('.journal-home').click();
-                await page.waitForURL('**/index.html#accueil');
+                await page.waitForURL('**/index.html');
                 check(!await page.locator('#intro').isVisible(), 'Retour du journal directement au bureau');
                 await page.evaluate(() => { const key=`dossier-moi:entree:${new URL('.',location.href).pathname}`; localStorage.removeItem(key); sessionStorage.removeItem(key); });
                 await page.reload();
-                check(!await page.locator('#intro').isVisible(), 'Retour #accueil fonctionne sans mémoire');
+                check(!await page.locator('#intro').isVisible(), 'Rafraîchissement du retour sans stockage');
+                // Même un ancien indicateur persistant ne doit pas masquer une nouvelle visite.
+                await page.evaluate(() => { const key=`dossier-moi:entree:${new URL('.',location.href).pathname}`; localStorage.setItem(key,'oui'); sessionStorage.setItem(key,'oui'); });
+                const fresh = await context.newPage();
+                await fresh.goto(`${base}/index.html`);
+                check(await fresh.locator('#intro').isVisible(), 'Nouvelle ouverture : introduction malgré l’ancienne mémoire');
+                await fresh.close();
+                await page.goto(`${base}/pages/recits.html`);
+                await page.goBack();
+                check(!await page.locator('#intro').isVisible(), 'Bouton précédent : retour direct au bureau');
+                await page.goto(`${base}/pages/recits.html`);
+                await page.goto(`${base}/index.html`);
+                check(await page.locator('#intro').isVisible(), 'Nouvelle visite dans le même onglet : introduction');
                 check(!errors.length, 'Aucune erreur JavaScript : ' + errors.join('; '));
                 console.log(`${name} : ${count} contrôles réussis.`);
             } catch (error) {

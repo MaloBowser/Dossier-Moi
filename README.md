@@ -1,5 +1,11 @@
 # Textes Markdown du Dossier Moi
 
+## Accès privé — à lire avant publication
+
+Le mot de passe se définit dans **`securite.local.json`**, champ **`mot_de_passe`**. Ce fichier doit rester privé. `ouvrir-dossier.cmd` prépare et ouvre désormais `index.html` de la version protégée ; il refuse de démarrer tant que le mot de passe est vide ou trop court. Ne double-clique pas sur le `index.html` source : il s’ouvre en `file://` et ne peut pas utiliser cette protection.
+
+Pour GitHub Pages, utilise `preparer-publication.cmd` et publie **uniquement le contenu de `publication-privee` dans un nouveau dépôt séparé**. Ne publie pas les fichiers source de ce dossier. Voir [CONFIDENTIALITE.md](CONFIDENTIALITE.md) pour les étapes et les limites de la protection.
+
 Chaque rubrique du site possède son propre dossier :
 
 - `recits/contenu.md`
@@ -10,9 +16,9 @@ Chaque rubrique du site possède son propre dossier :
 - `reverie/contenu.md`
 - `conclusion/contenu.md`
 
-Ouvre le site avec `ouvrir-dossier.cmd` (ou Live Server), puis écris dans le fichier du dossier `textes/` correspondant. Enregistre avec Ctrl + S : le texte apparaît directement dans la mise en scène et s’actualise sous cinq secondes, sans recharger la page. Les fichiers Markdown ne peuvent pas être chargés en ouvrant simplement le HTML en `file://`.
+Écris dans le fichier du dossier `textes/` correspondant. La version protégée est un instantané : après enregistrement, relance `ouvrir-dossier.cmd` pour régénérer le contenu chiffré. Pour le développement local sans protection seulement, Live Server ou `python outils/serveur-local.py` permettent l’actualisation sous cinq secondes. Les fichiers Markdown ne peuvent pas être chargés en ouvrant simplement le HTML en `file://`.
 
-La lettre de `textes/projets/contenu.md` devient le corps du mail « À mon moi de 2040 ». Il n’y a rien à recopier dans le HTML. Les mails secondaires interprètent également le Markdown après leur ligne `---`.
+La lettre de `textes/projets/contenu.md` devient le corps du mail « À mon moi de 2040 ». Il n’y a rien à recopier dans le HTML. Les mails secondaires restent des aperçus non cliquables : leurs champs `De`, `Objet` et `Début` remplissent uniquement la liste.
 
 Les paragraphes, **gras**, *italiques*, listes et images sont conservés. Les chemins d’images sont relatifs au fichier `.md` : depuis un `contenu.md`, `![Légende](../../images/ma-photo.jpg)` pointe vers le dossier `images` du site. Les commentaires HTML ne sont pas affichés. Le contenu est nettoyé avant affichage pour ne pas exécuter de scripts.
 
@@ -31,13 +37,15 @@ Les sections non reconnues restent visibles au début de la rubrique : aucun tex
 
 Le rendu Markdown utilise les bibliothèques locales de `assets/vendor/` ; aucune connexion extérieure n’est nécessaire pour lire les textes. La carte conserve ses dépendances cartographiques habituelles.
 
-Le site reste entièrement statique et compatible avec GitHub Pages : publie les dossiers `textes` et `assets` avec les pages. En ligne, seules les modifications publiées sont visibles ; le navigateur ne lit pas les fichiers restés sur ton ordinateur.
+La version chiffrée reste statique et compatible avec GitHub Pages : **ne publie pas les dossiers originaux**, seulement l’export `publication-privee`. En ligne, seules les modifications exportées puis publiées sont visibles.
 
 Vérification des branchements et de l’actualisation : `outils/verification-contenus.cjs` (Playwright + Edge). Les exemples de test sont simulés dans le navigateur : les textes personnels ne sont pas modifiés.
 
 ## Entrée et carnet
 
-L’introduction est mémorisée après le clic sur « Entrer dans mon univers », dans ce navigateur et pour l’adresse du site. Le bouton « Revoir l’introduction », sous les rubriques, permet de la rejouer volontairement. Les liens de retour utilisent `index.html#accueil`, même si le navigateur refuse le stockage local.
+Chaque nouvelle ouverture du lien principal affiche d’abord le carnet verrouillé, puis l’introduction après le mot de passe. Le lanceur `ouvrir-dossier.cmd` ouvre cette entrée protégée, pas directement la boîte mail. L’ancienne mémorisation permanente du navigateur n’est plus utilisée.
+
+Après l’entrée, un rafraîchissement ou un retour dans l’historique conserve le bureau. Les liens de retour des rubriques utilisent `index.html#accueil` pour éviter de rejouer l’introduction ; ce marqueur est ensuite retiré de l’adresse pour garder un lien partageable qui commence par l’introduction. Le bouton « Revoir l’introduction », sous les rubriques, reste disponible.
 
 Le mur s’écarte en deux pans pendant environ 2,25 secondes. Avec les mouvements réduits, l’accès est immédiat.
 
