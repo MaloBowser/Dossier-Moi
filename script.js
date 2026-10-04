@@ -66,8 +66,6 @@ if (intro && enterUniverse && homeWorld) {
     enterUniverse.addEventListener('click', () => {
         if (intro.classList.contains('is-entering')) return;
         window.dossierEntrance?.remember();
-        // Le hash assure aussi un retour sans introduction si le stockage est bloqué.
-        try { history.replaceState(history.state, '', '#accueil'); } catch { /* file: */ }
         intro.classList.add('is-entering');
         enterUniverse.disabled = true;
         document.body.classList.add('entrance-revealing');
@@ -80,7 +78,7 @@ if (intro && enterUniverse && homeWorld) {
         enterUniverse.focus({ preventScroll: true });
     });
     window.addEventListener('pageshow', event => {
-        if (event.persisted && (location.hash === '#accueil' || intro.classList.contains('is-entering'))) showHome();
+        if (event.persisted && (history.state?.dossierHome || location.hash === '#accueil' || intro.classList.contains('is-entering'))) showHome();
     });
 }
 

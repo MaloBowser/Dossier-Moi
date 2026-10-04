@@ -159,38 +159,31 @@
 
     const mailButton = document.querySelector('#future-mail');
     const letter = document.querySelector('#future-letter');
-    const customLetter = document.querySelector('#custom-letter');
-    let selectedMail = null;
     function selectMail(button) {
-        document.querySelectorAll('.mail-card').forEach(card => {
+        document.querySelectorAll('button.mail-card').forEach(card => {
             card.classList.toggle('is-selected', card === button);
             card.setAttribute('aria-expanded', String(card === button));
         });
     }
     mailButton.addEventListener('click', () => {
-        selectedMail = 'future';
-        customLetter.hidden = true;
         selectMail(mailButton);
         unread = false;
         letter.hidden = false;
         windows.get('outlook').classList.add('mail-is-open');
         mailButton.classList.remove('is-unread');
-        mailButton.setAttribute('aria-label', 'Lire le message de Malo 2026 : À mon moi de 2040');
+        mailButton.setAttribute('aria-label', 'Lire le message de Malo 2026 : Lettre dans 10 ans');
         mailButton.querySelector('.unread-dot').style.visibility = 'hidden';
         document.querySelectorAll('.notification-badge, .unread-count').forEach(element => { element.hidden = !unread; });
         letter.querySelector('h2').focus({ preventScroll: true });
     });
     function backToMails() {
         letter.hidden = true;
-        customLetter.hidden = true;
         windows.get('outlook').classList.remove('mail-is-open');
         const previous = document.querySelector('.mail-card.is-selected') || mailButton;
-        selectedMail = null;
         selectMail(null);
         previous.focus();
     }
     document.querySelector('#back-to-mails').addEventListener('click', backToMails);
-    document.querySelector('#back-from-custom').addEventListener('click', backToMails);
 
     // Un fichier par clin d’œil. Aucun HTML du fichier n’est exécuté.
     // Les 20 noms restent fixes : on remplit les fichiers, sans modifier le JS.
@@ -213,80 +206,86 @@
             preview: fields.debut || body.split('\n')[0] || '', body: body || fields.debut };
     }
     const customMails = document.querySelector('#custom-mails');
-    const syncStatus = document.querySelector('#mail-sync');
     let lastMailSnapshot = '';
     let loadingMails = false;
+    // Afficher immédiatement les mails déjà fournis, même sans serveur.
+    // Les lectures Markdown réussies remplacent ensuite cette copie, fichier par fichier.
+    const knownMails = new Map(Object.entries(window.DossierMailsSecours || {})
+        .map(([id, text]) => [id, parseMail(text, id)]));
+    const currentMails = () => [...knownMails.entries()]
+        .sort(([a], [b]) => a.localeCompare(b)).map(([, mail]) => mail).filter(Boolean);
 
-    function displayCustomMail(mail, button, focus = true) {
-        selectedMail = mail.id;
-        letter.hidden = true;
-        customLetter.hidden = false;
-        windows.get('outlook').classList.add('mail-is-open');
-        selectMail(button);
-        customLetter.querySelector('h2').textContent = mail.subject;
-        customLetter.querySelector('.letter-sender strong').textContent = mail.sender;
-        customLetter.querySelector('.profile-avatar').textContent = mail.sender.slice(0, 2).toUpperCase();
-        window.DossierMarkdown.render(customLetter.querySelector('.letter-body'), mail.body || '', `../textes/projets/mails/${mail.id}.md`, 'Ce message n’a pas encore de contenu.');
-        if (focus) {
-            document.querySelector('.reading-pane').scrollTop = 0;
-            customLetter.querySelector('h2').focus({ preventScroll: true });
-        }
+    // Pictogrammes locaux, dans le même système SVG que le reste du bureau.
+    function senderIdentity(sender) {
+        const identities = [
+            [/muffin@/i, 'sender-muffin', '#fff0dc', '#9c592d'],
+            [/farine/i, 'sender-wheat', '#fff3cf', '#9c701c'],
+            [/olaf/i, 'sender-snowman', '#e5f5ff', '#377b9c'],
+            [/comptable/i, 'sender-calculator', '#e5f3e8', '#328052'],
+            [/lego/i, 'sender-bricks', '#ffebdf', '#c64d32'],
+            [/jecka/i, 'sender-tag', '#eee9fb', '#7854ac'],
+            [/gabriel/i, 'sender-web', '#e4f0ff', '#397dc2'],
+            [/amazon/i, 'sender-parcel', '#fff0d9', '#ad722b'],
+            [/rolife/i, 'sender-house', '#e8f1e4', '#627c45'],
+            [/apple/i, 'sender-apple', '#eceef1', '#343c48']
+        ];
+        const match = identities.find(([pattern]) => pattern.test(sender));
+        return match ? match.slice(1) : ['mail', '#e5effa', '#3977b3'];
     }
+
     function renderCustomMails(mails) {
-        const focusedId = document.activeElement?.dataset.mailId;
         const fragment = document.createDocumentFragment();
-        mails.forEach((mail, index) => {
-            const card = document.createElement('button');
-            card.type = 'button';
+        mails.forEach(mail => {
+            // Ces mails sont des éléments de décor : ni bouton, ni lien, ni action.
+            const card = document.createElement('div');
             card.className = 'mail-card custom-mail';
             card.dataset.mailId = mail.id;
-            card.setAttribute('aria-label', mail.sender + ' : ' + mail.subject);
-            card.setAttribute('aria-controls', 'custom-letter');
-            card.setAttribute('aria-expanded', String(selectedMail === mail.id));
-            // Seulement le squelette statique : toutes les valeurs passent par textContent.
-            card.innerHTML = '<span class="mail-check" aria-hidden="true"></span><span class="profile-avatar"></span><span class="mail-summary"><strong></strong><b></b><small></small></span><span class="mail-meta">2040</span>';
-            card.querySelector('.profile-avatar').textContent = mail.sender.slice(0, 2).toUpperCase();
-            card.querySelector('.profile-avatar').style.background = ['#dbe9f5', '#eee3f2', '#deeee9', '#f4e8db'][index % 4];
+            card.setAttribute('role', 'listitem');
+            card.innerHTML = '<span aria-hidden="true"></span><span class="profile-avatar" aria-hidden="true"></span><span class="mail-summary"><strong></strong><b></b><small></small></span><span class="mail-meta"></span>';
+            const avatar = card.querySelector('.profile-avatar');
+            const [symbol, background, color] = senderIdentity(mail.sender);
+            avatar.classList.add('sender-avatar');
+            avatar.append(icon(symbol));
+            avatar.style.background = background;
+            avatar.style.color = color;
             card.querySelector('strong').textContent = mail.sender;
             card.querySelector('b').textContent = mail.subject;
             card.querySelector('small').textContent = mail.preview;
-            card.addEventListener('click', () => displayCustomMail(mail, card));
+            card.querySelector('.mail-meta').textContent = mail.subject === 'Dossier moi' ? '2026' : '2040';
             fragment.append(card);
         });
         customMails.replaceChildren(fragment);
-        const selected = mails.find(mail => mail.id === selectedMail);
-        if (selected) displayCustomMail(selected, customMails.querySelector('[data-mail-id="' + selected.id + '"]'), false);
-        else if (selectedMail && selectedMail !== 'future') backToMails();
-        if (focusedId) customMails.querySelector('[data-mail-id="' + focusedId + '"]')?.focus({ preventScroll: true });
     }
     async function loadCustomMails() {
-        if (location.protocol === 'file:') {
-            syncStatus.textContent = 'Pour lire les fichiers .md, lance ouvrir-dossier.cmd à la racine du site.';
-            syncStatus.classList.add('sync-warning');
-            return;
-        }
+        if (location.protocol === 'file:') return;
         if (loadingMails) return;
         loadingMails = true;
         try {
-            const results = await Promise.all(Array.from({ length: 20 }, async (_, index) => {
+            const results = await Promise.allSettled(Array.from({ length: 20 }, async (_, index) => {
                 const id = 'mail-' + String(index + 1).padStart(2, '0');
-                const response = await fetch('../textes/projets/mails/' + id + '.md', { cache: 'no-store' });
-                if (!response.ok) throw new Error(id);
-                return parseMail(await response.text(), id);
+                const controller = new AbortController();
+                const timeout = window.setTimeout(() => controller.abort(), 4000);
+                try {
+                    const response = await fetch('../textes/projets/mails/' + id + '.md', { cache: 'no-store', signal: controller.signal });
+                    if (!response.ok) throw new Error(id);
+                    return { id, mail: parseMail(await response.text(), id) };
+                } finally { window.clearTimeout(timeout); }
             }));
-            const mails = results.filter(Boolean);
+            results.forEach(result => {
+                if (result.status === 'fulfilled') knownMails.set(result.value.id, result.value.mail);
+            });
+            const mails = currentMails();
             const snapshot = JSON.stringify(mails);
             if (snapshot !== lastMailSnapshot) {
                 renderCustomMails(mails);
                 lastMailSnapshot = snapshot;
             }
-            syncStatus.textContent = (mails.length + 1) + ' message' + (mails.length ? 's' : '') + ' · Tous les dossiers sont à jour';
-            syncStatus.classList.remove('sync-warning');
         } catch {
-            syncStatus.textContent = 'Actualisation impossible. Vérifie le serveur local et les 20 fichiers mails. Les messages déjà chargés sont conservés.';
-            syncStatus.classList.add('sync-warning');
+            // La copie intégrée ou le dernier contenu reçu reste affiché, sans bandeau technique.
         } finally { loadingMails = false; }
     }
+    renderCustomMails(currentMails());
+    lastMailSnapshot = JSON.stringify(currentMails());
     loadCustomMails();
     window.setInterval(() => {
         if (activeApp === 'outlook' && !document.hidden) loadCustomMails();
