@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#344b46">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; worker-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Le carnet privé de Malo</title>
+  <link rel="stylesheet" href="entree.css">
+  <script src="entree.js" defer></script>
+</head>
+<body>
+  <main class="threshold" id="threshold">
+    <div class="desk-note" aria-hidden="true">Un peu de code.<br>Quelques briques.<br>Beaucoup de moi.</div>
+    <div class="brick brick-one" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <div class="brick brick-two" aria-hidden="true"><i></i><i></i></div>
+    <article class="notebook" aria-labelledby="title">
+      <div class="binding" aria-hidden="true"></div>
+      <div class="book-content">
+        <p class="eyebrow"><span></span> DOSSIER MOI · ACCÈS PRIVÉ</p>
+        <div class="lock" aria-hidden="true"><span class="shackle"></span><span class="lock-body"><i></i></span></div>
+        <h1 id="title">Derrière cette couverture,<br><em>il y a mon univers.</em></h1>
+        <p class="intro">Des souvenirs, des rêves et quelques pages de ma vie.<br>Je les partage avec les personnes à qui j’ai confié la clé.</p>
+        <form id="unlock-form">
+          <label for="password">La clé du carnet</label>
+          <div class="password-field">
+            <input id="password" name="password" type="password" autocomplete="off" autocapitalize="none" spellcheck="false" required aria-describedby="help status" placeholder="Votre mot de passe">
+            <button type="button" id="show-password" aria-label="Afficher le mot de passe" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+          </div>
+          <p id="help">Le mot de passe vous a été transmis séparément.</p>
+          <button class="unlock-button" id="unlock" type="submit"><span>Ouvrir mon carnet</span><span aria-hidden="true">↗</span></button>
+          <p id="status" class="status" role="status" aria-live="polite"></p>
+        </form>
+        <footer><span aria-hidden="true">⌑</span> Une visite, une clé. Le carnet se referme quand vous partez.</footer>
+      </div>
+      <span class="bookmark" aria-hidden="true"></span>
+    </article>
+    <div class="muffin-note" aria-hidden="true"><svg viewBox="0 0 100 100"><path d="m24 48 9 37h35l9-37" fill="#bf8050"/><path d="m38 57 4 21m18-21-3 21" stroke="#ffe0a6" stroke-width="4"/><path d="M25 54C5 54 9 23 27 25c1-23 34-23 38-4 23-9 35 26 12 33Z" fill="#e7b876"/><circle cx="31" cy="36" r="4" fill="#694536"/><circle cx="53" cy="24" r="3" fill="#694536"/><circle cx="67" cy="41" r="4" fill="#694536"/></svg><span>À ouvrir avec curiosité.</span></div>
+    <p class="signature" aria-hidden="true">Malo.</p>
+    <noscript>Activez JavaScript pour déchiffrer ce carnet. Aucun contenu privé n’est accessible sans sa clé.</noscript>
+  </main>
+  <section id="visit" hidden aria-label="Dossier déverrouillé">
+    <header class="private-toolbar"><span>🔓 Mon carnet est ouvert</span><button id="close-vault" type="button">Refermer le carnet <span aria-hidden="true">↗</span></button></header>
+    <div id="frame-host"></div>
+  </section>
+</body>
+</html>

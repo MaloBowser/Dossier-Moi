@@ -1,0 +1,115 @@
+// Aucun vrai mot de passe : l'export de test utilise une clé aléatoire éphémère.
+const {createRequire}=require('node:module');
+const {spawn}=require('node:child_process');
+const {mkdtemp,readFile}=require('node:fs/promises');
+const {tmpdir}=require('node:os');
+const {join}=require('node:path');
+let chromium;
+try{({chromium}=require('playwright'));}catch{({chromium}=createRequire(process.execPath)('playwright'));}
+(async()=>{
+    const temp=await mkdtemp(join(tmpdir(),'dossier-prive-test-'));
+    const server=spawn('python',[join(__dirname,'fixture_confidentialite.py'),temp],{windowsHide:true,stdio:['ignore','pipe','pipe']});
+    let browser;
+    try{
+        const fixture=await new Promise((resolve,reject)=>{
+            let out='',err='';
+            const timeout=setTimeout(()=>reject(Error('Export de test trop long')),60000);
+            server.stderr.on('data',data=>{err+=data;});
+            server.on('error',reject);
+            server.on('exit',code=>{if(code)reject(Error(err||'Export interrompu'));});
+            server.stdout.on('data',data=>{out+=data;if(out.includes('\n')){clearTimeout(timeout);resolve(JSON.parse(out.split('\n')[0]));}});
+        });
+        browser=await chromium.launch({headless:true,channel:'msedge'});
+        const context=await browser.newContext({viewport:{width:1440,height:1000},reducedMotion:'reduce'});
+        const page=await context.newPage();
+        const errors=[];page.on('pageerror',error=>errors.push(error.message));
+        const requested=[];page.on('request',request=>requested.push(request.url()));
+        let count=0;
+        const check=(ok,label)=>{if(!ok)throw Error(label);count++;};
+        const unlock=async()=>{
+            await page.locator('#password').fill(fixture.password);
+            await page.locator('#unlock').click();
+            await page.locator('#visit').waitFor({state:'visible',timeout:25000});
+            await page.frameLocator('#frame-host iframe').locator('#intro').waitFor({state:'visible'});
+        };
+        await page.goto(fixture.url);
+        check(await page.locator('#threshold').isVisible(),'Entrée avant tout contenu');
+        check(await page.locator('iframe').count()===0,'Aucune page privée chargée avant la clé');
+        await page.screenshot({path:join(temp,'entree-ordinateur.png')});
+        for(const path of ['textes/projets/contenu.md','images/bureau-chat.png','securite.local.json','pages/recits.html']){
+            const response=await context.request.get(fixture.url+path);
+            check(response.status()===404,'Accès direct absent : '+path);
+        }
+        await page.locator('#password').fill('une mauvaise clé de test');
+        await page.locator('#unlock').click();
+        await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('ne convient pas'));
+        check(await page.locator('iframe').count()===0,'Mauvais mot de passe : aucun accès');
+        check(await page.locator('#password').inputValue()==='','Champ du mot de passe effacé');
+        await unlock();
+        const inside=page.frameLocator('#frame-host iframe');
+        check(await inside.locator('#intro').isVisible(),'Introduction normale après la clé');
+        await inside.locator('#enter-universe').click();
+        await inside.locator('#intro').waitFor({state:'hidden'});
+        await inside.locator('a[href="pages/projets.html"]').click();
+        await inside.locator('#future-mail').waitFor({state:'attached'});
+        const app=page.frames().find(frame=>frame.url().includes('/pages/projets.html'));
+        await inside.locator('[data-app="outlook"]').first().click();
+        await inside.locator('#future-mail').click();
+        await inside.locator('#future-letter .letter-body[data-content-state="ready"]').waitFor();
+        check((await inside.locator('#future-letter .letter-body').innerText()).includes('Muffin'),'Markdown personnel déchiffré et intégré au mail');
+        check(await inside.locator('.custom-mail').count()===12,'Douze mails conservés');
+        check(await inside.locator('#mail-sync').count()===0,'Aucun bandeau technique ajouté');
+        const privateRoot=new URL('../',app.url()).href;
+        const rawUrl=privateRoot+'textes/projets/contenu.md';
+        check(await page.evaluate(async url=>(await fetch(url)).ok,rawUrl),'Accès déchiffré pendant la visite');
+        const cdp=await context.newCDPSession(page);
+        await cdp.send('ServiceWorker.enable');
+        await cdp.send('ServiceWorker.stopAllWorkers');
+        check(await page.evaluate(async url=>(await fetch(url)).ok,rawUrl),'Reprise après arrêt du service worker : visite conservée en mémoire');
+        await cdp.detach();
+        const range=await page.evaluate(async url=>{const r=await fetch(url,{headers:{Range:'bytes=0-19'}});return {status:r.status,length:(await r.arrayBuffer()).byteLength,cache:r.headers.get('Cache-Control')};},rawUrl);
+        check(range.status===206&&range.length===20,'Lecture par plage pour les médias');
+        check(range.cache.includes('no-store'),'Réponses privées non mises en cache');
+        check(await page.evaluate(()=>localStorage.length===0&&sessionStorage.length===0),'Ni clé ni mot de passe en stockage navigateur');
+        check(await page.evaluate(async()=>(await caches.keys()).length===0),'Aucun cache de fichiers déchiffrés');
+        await page.screenshot({path:join(temp,'mail-deverrouille.png')});
+        // Une nouvelle fenêtre doit demander sa propre clé.
+        const second=await context.newPage();await second.goto(fixture.url);
+        check(await second.locator('#threshold').isVisible()&&await second.locator('iframe').count()===0,'Autre onglet verrouillé');await second.close();
+        await page.locator('#close-vault').click();
+        check(await page.locator('iframe').count()===0,'Refermer retire toutes les pages privées');
+        check(await page.evaluate(async url=>(await fetch(url)).status,rawUrl)===401,'Ancienne adresse privée bloquée après verrouillage');
+        await unlock();
+        await page.reload();
+        check(await page.locator('#threshold').isVisible()&&await page.locator('iframe').count()===0,'Rafraîchissement : nouvelle clé demandée');
+        await unlock();
+        await page.goto(fixture.url+'404.html');await page.goBack();
+        check(await page.locator('#threshold').isVisible()&&await page.locator('iframe').count()===0,'Quitter puis Précédent : verrouillage conservé');
+        await unlock();
+        const activeFrame=page.frames().find(frame=>frame.url().includes('/_dossier/'));
+        const previousPrivate=activeFrame.url();
+        await page.close();
+        const reopened=await context.newPage();await reopened.goto(fixture.url);
+        check(await reopened.locator('#threshold').isVisible(),'Fermer et rouvrir : mot de passe demandé');
+        await reopened.waitForFunction(()=>!!navigator.serviceWorker.controller);
+        check(await reopened.evaluate(async url=>(await fetch(url)).status,previousPrivate)===401,'Ancienne session inaccessible après fermeture');
+        await reopened.setViewportSize({width:390,height:844});
+        check(await reopened.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Entrée mobile sans débordement');
+        await reopened.screenshot({path:join(temp,'entree-mobile.png'),fullPage:true});
+        const tampered=await browser.newContext();
+        const brokenPage=await tampered.newPage();
+        const encrypted=await readFile(join(temp,'mon-dossier','dossier.bin'));
+        encrypted[encrypted.length-1]^=1;
+        await brokenPage.route('**/dossier.bin',route=>route.fulfill({body:encrypted,contentType:'application/octet-stream'}));
+        await brokenPage.goto(fixture.url);
+        await brokenPage.locator('#password').fill(fixture.password);
+        await brokenPage.locator('#unlock').click();
+        await brokenPage.waitForFunction(()=>document.querySelector('#status').textContent.includes('ne convient pas'));
+        check(await brokenPage.locator('iframe').count()===0,'Bloc chiffré altéré refusé intégralement');
+        await tampered.close();
+        check(requested.every(url=>!url.includes(fixture.password)),'Mot de passe jamais transmis dans une URL');
+        check(!errors.length,'Aucune erreur JS : '+errors.join(';'));
+        console.log(count+' contrôles réussis ; '+fixture.files+' fichiers chiffrés. Captures : '+temp);
+        await context.close();
+    }finally{if(browser)await browser.close();server.kill();}
+})().catch(error=>{console.error(error);process.exitCode=1;});

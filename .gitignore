@@ -1,0 +1,5 @@
+# Le mot de passe ne doit jamais partir sur GitHub.
+/securite.local.json
+/publication-privee/
+__pycache__/
+*.pyc

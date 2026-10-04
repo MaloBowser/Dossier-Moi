@@ -3,7 +3,7 @@
 - Page : `pages/projets.html`.
 - Présentation : `projets.css`.
 - Applications, raccourcis et horloge : `projets.js`.
-- Lettre : écris dans `textes/projets/contenu.md`. Le contenu s’affiche directement dans le corps du mail et se met à jour sous cinq secondes après enregistrement.
+- Lettre : écris dans `textes/projets/contenu.md`. Le contenu s’affiche directement dans le corps du mail. Relance `ouvrir-dossier.cmd` après modification pour régénérer la version protégée ; le serveur de développement non protégé permet une actualisation sous cinq secondes.
 - Aperçu fictif dans VS Code : `pages/apercu-dossier.html`.
 - Le bouton retour apparaît seulement sur le bureau. Cliquer à nouveau sur une
   icône de la barre des tâches ou appuyer sur Échap réduit l’application.
@@ -13,8 +13,7 @@
 - Les 20 faux mails se remplissent dans `textes/projets/mails/mail-01.md` à
   `mail-20.md` : voir le README de ce dossier. Ils sont relus toutes les cinq
   secondes quand Outlook est visible. Les fichiers vides restent masqués.
-- Lancer `ouvrir-dossier.cmd` à la racine (Python 3) ou utiliser Live Server
-  pour permettre au navigateur de charger ces fichiers locaux.
+- Lancer `ouvrir-dossier.cmd` à la racine (Python 3) pour préparer et ouvrir le carnet chiffré. Le mot de passe se définit dans `securite.local.json`. Live Server reste uniquement un outil de développement sans protection.
 - L’horloge suit l’heure locale de l’ordinateur ; la date utilise le jour et le
   mois courants, avec l’année 2040.
 - Aucun compte, envoi de message ou service distant n’est utilisé.

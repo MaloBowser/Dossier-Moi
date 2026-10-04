@@ -17,8 +17,7 @@ Début: On a retrouvé les instructions de ton tout premier modèle…
 - `De:` : le nom fictif de l’expéditeur (pas besoin d’adresse e-mail).
 - `Objet:` : le titre du mail.
 - `Début:` : un aperçu facultatif dans la liste. Laisser vide pour afficher seulement l’expéditeur et l’objet, comme sur les photos fournies.
-- Enregistre avec **Ctrl + S** : Outlook relit les fichiers toutes les cinq
-  secondes quand il est ouvert, ainsi qu’au retour sur la page.
+- Enregistre avec **Ctrl + S**, puis relance `ouvrir-dossier.cmd` pour régénérer la version chiffrée. Dans le serveur de développement sans protection seulement, Outlook relit les fichiers toutes les cinq secondes.
 - Pour retirer un mail, efface les valeurs en laissant les trois lignes.
   Ne supprime pas le fichier.
 
@@ -42,9 +41,10 @@ Ils fonctionnent aussi hors ligne ; aucune image distante n’est chargée.
 
 ## Ouvrir le site
 
-Double-clique sur `ouvrir-dossier.cmd` à la racine du site. Il utilise Python 3
-(déjà installé sur cet ordinateur), ouvre le navigateur et sert uniquement le
-dossier du site sur `127.0.0.1`. Garde la fenêtre du lanceur ouverte pendant
+Double-clique sur `ouvrir-dossier.cmd` à la racine du site, après avoir défini
+ton mot de passe dans `securite.local.json`. Il prépare le carnet chiffré,
+ouvre le navigateur et sert uniquement cet export sur `127.0.0.1`.
+Garde la fenêtre du lanceur ouverte pendant
 la présentation ; ferme-la ou fais Ctrl + C pour arrêter le serveur.
 
 Un serveur de développement comme Live Server convient aussi. En ouvrant
@@ -53,8 +53,9 @@ visibles grâce à une copie intégrée. Le navigateur ne peut pas relire les
 Markdown dans ce mode : utilise le lanceur pour voir tes dernières modifications.
 
 La copie `assets/mails-secours.js` est générée depuis les Markdown au lancement
-du serveur. Pour l’actualiser avant de distribuer ou publier le site, utilise
-`python outils/exporter_mails.py`. Ne modifie pas cette copie à la main.
+du serveur, puis incluse dans le contenu chiffré. Ne la publie pas séparément
+et ne la modifie pas à la main. Pour publier, suis `CONFIDENTIALITE.md` et
+utilise uniquement le contenu du dossier `publication-privee`.
 Un fichier inaccessible ne masque plus les autres mails ; une copie déjà chargée
 est conservée. Un fichier lu avec succès mais vidé retire bien le mail de la liste.
 
