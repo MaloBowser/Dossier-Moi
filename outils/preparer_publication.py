@@ -65,6 +65,8 @@ def build(root, output, password):
         raise ValueError('Mot de passe trop court : au moins 16 caractères.')
     if output.exists() and any(path.name not in PUBLIC_FILES or not path.is_file() for path in output.iterdir()):
         raise ValueError('Le dossier de sortie contient des fichiers étrangers : export refusé pour ne rien écraser ni publier en clair.')
+    from exporter_photos import export_photos
+    export_photos(root)
     files = collect_files(root)
     plaintext = gzip.compress(json.dumps({'format': FORMAT, 'files': files}, ensure_ascii=True,
                                         separators=(',', ':')).encode('utf-8'), mtime=0)

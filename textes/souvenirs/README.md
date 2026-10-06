@@ -16,3 +16,4 @@ Ce dossier contient un fichier Markdown par lieu de la carte.
 
 Le fichier `modele-souvenir.md` peut être dupliqué pour créer un nouveau souvenir.
 
+Pour les albums photo, glisse directement les fichiers image dans le dossier du lieu sous `images/souvenirs/`. Aucun Markdown à modifier. Relance `ouvrir-dossier.cmd` pour actualiser la version protégée.

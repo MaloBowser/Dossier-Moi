@@ -202,7 +202,7 @@ const renderMarkdownFile = (container, source, emptyMessage = 'Texte à ajouter'
  * Souvenirs autour d'une image
  *
  * Pour ajouter un souvenir, dupliquez une entrée de cette liste puis renseignez
- * ses champs. Le tableau "images" accepte un ou plusieurs chemins d'images.
+ * ses champs. Les photos sont recensées dans images/souvenirs/<lieu>/.
  */
 const souvenirs = [
     {
@@ -298,6 +298,34 @@ const souvenirs = [
 ];
 
 const mapElement = document.querySelector('#souvenir-map');
+const applySouvenirPhotos = (photos) => {
+    souvenirs.forEach((souvenir) => {
+        const lieu = souvenir.markdown.split('/').pop().replace('.md', '');
+        if (Array.isArray(photos?.[lieu])) souvenir.images = photos[lieu];
+    });
+};
+applySouvenirPhotos(window.DossierPhotosSouvenirs);
+
+const refreshSouvenirPhotos = async () => {
+    if (window.location.protocol === 'file:') {
+        await new Promise((resolve) => {
+            const listScript = document.createElement('script');
+            listScript.src = `../assets/photos-souvenirs.js?t=${Date.now()}`;
+            listScript.onload = () => {
+                applySouvenirPhotos(window.DossierPhotosSouvenirs);
+                listScript.remove();
+                resolve();
+            };
+            listScript.onerror = () => { listScript.remove(); resolve(); };
+            document.head.append(listScript);
+        });
+        return;
+    }
+    try {
+        const response = await fetch('../assets/photos-souvenirs.json', { cache: 'no-store' });
+        if (response.ok) applySouvenirPhotos(await response.json());
+    } catch (_) { /* La version exportée utilise la liste préparée à l'ouverture. */ }
+};
 
 if (mapElement && typeof L !== 'undefined') {
     const map = L.map(mapElement, {
@@ -373,7 +401,12 @@ if (mapElement && typeof L !== 'undefined') {
         }
     };
 
-    const openPhotoAlbum = (souvenir, triggerButton) => {
+    const openPhotoAlbum = async (souvenir, triggerButton) => {
+        await refreshSouvenirPhotos();
+        if (!triggerButton.isConnected) return;
+        triggerButton.querySelector('small').textContent = souvenir.images.length
+            ? `${souvenir.images.length} photo${souvenir.images.length > 1 ? 's' : ''}`
+            : 'Photos à ajouter';
         albumReturnFocus = triggerButton;
         photoAlbumTitle.textContent = souvenir.lieu;
         photoAlbumGallery.replaceChildren();

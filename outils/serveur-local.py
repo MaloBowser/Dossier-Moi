@@ -4,10 +4,26 @@ from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 import webbrowser
+import json
+from urllib.parse import urlsplit
+from exporter_photos import collect_photos, export_photos
 from exporter_mails import export_mails
 
 
 class SiteHandler(SimpleHTTPRequestHandler):
+    def do_GET(self):
+        if urlsplit(self.path).path == '/assets/photos-souvenirs.js':
+            export_photos(Path(self.directory))
+        if urlsplit(self.path).path == '/assets/photos-souvenirs.json':
+            content = json.dumps(collect_photos(Path(self.directory))).encode('utf-8')
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json; charset=utf-8')
+            self.send_header('Content-Length', str(len(content)))
+            self.end_headers()
+            self.wfile.write(content)
+            return
+        super().do_GET()
+
     def end_headers(self):
         self.send_header('Cache-Control', 'no-store')
         super().end_headers()
@@ -23,6 +39,7 @@ def main():
     parser.add_argument('--no-browser', action='store_true')
     args = parser.parse_args()
     root = Path(__file__).resolve().parent.parent
+    export_photos(root)
     # Préparer aussi une copie consultable sans serveur, depuis les mêmes Markdown.
     try:
         export_mails(root)
