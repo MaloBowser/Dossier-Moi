@@ -1,0 +1,48 @@
+html.acces-verrouille body > :not(#acces-entree) { display: none !important; }
+html.acces-verrouille body {
+    margin: 0 !important;
+    overflow: auto !important;
+    pointer-events: auto !important;
+}
+#acces-entree {
+    box-sizing: border-box;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 24px;
+    background: linear-gradient(135deg, #111722e8, #181a20b8),
+        url("images/bureau-dossier-moi.png") center / cover;
+    color: #eee8df;
+    font: 17px/1.5 Georgia, "Times New Roman", serif;
+}
+#acces-entree .acces-carte {
+    box-sizing: border-box;
+    width: min(100%, 450px);
+    padding: clamp(24px, 5vw, 40px);
+    border: 1px solid #dec79966;
+    border-radius: 22px;
+    background: linear-gradient(150deg, #303440f2, #1d222bef);
+    box-shadow: 0 24px 80px #0009, inset 0 1px #fff1;
+    backdrop-filter: blur(16px);
+}
+#acces-entree .acces-surtitre { margin: 0 0 26px; color: #dec799; letter-spacing: .22em; text-transform: uppercase; font: 12px/1.5 system-ui, sans-serif; }
+#acces-entree .acces-sceau { display: grid; place-items: center; width: 58px; height: 58px; margin-bottom: 22px; border: 1px solid #dec79966; border-radius: 50%; font-size: 24px; background: #dec79912; }
+#acces-entree h1 { margin: 0; font-size: clamp(30px, 6vw, 42px); line-height: 1.15; font-weight: normal; color: #fff2dc; }
+#acces-entree .acces-invitation { color: #cbc5bc; }
+#acces-entree label { display: block; margin-top: 24px; }
+#acces-entree input, #acces-entree button {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 48px;
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #bfae90;
+    border-radius: 8px;
+    font: 16px/1.4 system-ui, sans-serif;
+}
+#acces-entree input { background: #fffaf2; color: #171b22; }
+#acces-entree button { cursor: pointer; background: #dec799; color: #171b22; font-weight: 600; }
+#acces-entree button:disabled { cursor: wait; opacity: .65; }
+#acces-entree :focus-visible { outline: 3px solid #f4d896; outline-offset: 4px; }
+#acces-entree #message { min-height: 1.5em; margin-bottom: 0; color: #ffd3c9; }

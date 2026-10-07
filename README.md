@@ -1,5 +1,18 @@
 # Textes Markdown du Dossier Moi
 
+## Écran d’entrée du site
+
+L’accueil affiche une page de connexion avant l’introduction. `acces.js` compare
+l’empreinte SHA-256 du mot de passe, puis mémorise l’accès dans `sessionStorage`
+pour cet onglet : les retours à l’accueil et les rafraîchissements ne le demandent
+plus. Fermer l’onglet et ouvrir une nouvelle visite rétablit la demande (la fonction
+« restaurer les onglets » du navigateur peut toutefois restaurer la session).
+Les rubriques n’ont pas d’écran de connexion supplémentaire.
+
+Cet écran constitue un verrou visuel : il ne chiffre pas les fichiers et ne bloque
+pas leurs adresses directes. Il est indépendant de l’ancien export privé ci-dessous.
+Pour consulter le site avec cet écran, lancer `python outils/serveur-local.py`.
+
 ## Accès privé — à lire avant publication
 
 Le mot de passe se définit dans **`securite.local.json`**, champ **`mot_de_passe`**. Ce fichier doit rester privé. `ouvrir-dossier.cmd` prépare et ouvre désormais `index.html` de la version protégée ; il refuse de démarrer tant que le mot de passe est vide ou trop court. Ne double-clique pas sur le `index.html` source : il s’ouvre en `file://` et ne peut pas utiliser cette protection.

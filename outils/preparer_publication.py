@@ -15,7 +15,7 @@ FORMAT = 'dossier-moi-v1'
 ITERATIONS = 600_000
 PUBLIC_FILES = {'index.html', 'entree.css', 'entree.js', 'coffre-worker.js',
                 '404.html', 'dossier.json', 'dossier.bin', '.nojekyll'}
-TOP_FILES = ['index.html', 'accueil.js', 'script.js', 'projets.js', 'contenus.js',
+TOP_FILES = ['index.html', 'acces.js', 'acces.css', 'accueil.js', 'script.js', 'projets.js', 'contenus.js',
              'contenus-rubriques.js', 'style.css', 'projets.css', 'parcours.css', 'contenus.css']
 PRIVATE_FOLDERS = ['pages', 'textes', 'images', 'assets', 'videos', 'sons']
 ALLOWED_SUFFIXES = {'.html', '.css', '.js', '.json', '.md', '.png', '.jpg', '.jpeg',
