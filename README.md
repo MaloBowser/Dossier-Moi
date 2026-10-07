@@ -27,7 +27,7 @@ Les paragraphes, **gras**, *italiques*, listes et images sont conservés. Les ch
 Un texte libre est affiché dans la zone principale. Pour choisir précisément les emplacements, utilise les titres suivants, précédés de `##` dans le Markdown :
 
 - **Récits** : trois titres de ton choix, un par partie du carnet. Dans chaque partie, un sous-titre `### Photos` permet de mettre les images et légendes sur la page droite. Sans ces titres, les blocs du récit sont répartis automatiquement sur les trois parties.
-- **Évaluation** : `Mise en route`, `Utilisation recommandée`, `Performances optimales`, `Risque de bug`, `Dépannage`, `Évolution`. Une liste sous « Mise en route » devient les pièces colorées de la notice.
+- **Évaluation** : deux titres `# J’aime` et `# J’aime pas` (ou `##`), chacun suivi d’une liste ou d’un tableau sans en-têtes. Chaque rubrique devient une fiche et chaque goût une étiquette. Les textes restent dans `textes/evaluation/contenu.md`.
 - **Affrontement** : `Leur jugement`, `Ma réaction`.
 - **Conclusion** : `Ce que j’ai aimé`, `Ce que j’ai moins aimé`, `Ce que je retiens`.
 - **Rêverie** : tout le fichier apparaît dans l’univers du rêve.

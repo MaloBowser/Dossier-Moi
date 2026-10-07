@@ -38,6 +38,10 @@ window.DossierPhotosSouvenirs = {
   ],
   "vinaros": [],
   "gerardmer": [
-    "../images/souvenirs/gerardmer/DSC_0533.JPG"
+    "../images/souvenirs/gerardmer/DSC_0533.JPG",
+    "../images/souvenirs/gerardmer/DSC_0565.JPG",
+    "../images/souvenirs/gerardmer/DSC_0597.JPG",
+    "../images/souvenirs/gerardmer/DSC_0714.JPG",
+    "../images/souvenirs/gerardmer/DSC_0760.JPG"
   ]
 };

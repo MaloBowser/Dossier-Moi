@@ -71,14 +71,44 @@
         }, root);
     }
 
-    bindSections(document.querySelector('.manual'), '../textes/evaluation/contenu.md', [
-        { selector: '#manual-start', matches: /mise en route|^etape 1/ },
-        { selector: '#manual-use', matches: /utilisation|^etape 2/ },
-        { selector: '#manual-performance', matches: /performances?|^etape 3/ },
-        { selector: '#manual-bugs', matches: /risque|bug|^etape 4/ },
-        { selector: '#manual-repair', matches: /depannage|solutions?|^etape 5/ },
-        { selector: '#manual-update', matches: /evolution|mises? a jour|^etape 6/ }
-    ]);
+    const tastes = document.querySelector('#evaluation-lists');
+    if (tastes) md.watch('../textes/evaluation/contenu.md', text => {
+        const content = document.createElement('div');
+        md.render(content, text, '../textes/evaluation/contenu.md');
+        // Les tableaux sans en-têtes deviennent des listes, sans recopier les goûts.
+        content.querySelectorAll('table').forEach(table => {
+            if ([...table.querySelectorAll('th')].some(cell => cell.textContent.trim())) return;
+            const list = document.createElement('ul');
+            table.querySelectorAll('td').forEach(cell => {
+                if (!cell.textContent.trim() && !cell.querySelector('img')) return;
+                const item = document.createElement('li');
+                item.append(...cell.childNodes);
+                list.append(item);
+            });
+            table.replaceWith(list);
+        });
+        const result = document.createDocumentFragment();
+        let card;
+        [...content.childNodes].forEach(node => {
+            if (node.nodeType === Node.TEXT_NODE && !node.textContent.trim()) return;
+            if (node.nodeName === 'H1' || node.nodeName === 'H2') {
+                card = document.createElement('section');
+                card.className = 'taste-card markdown-content';
+                const heading = document.createElement('h2');
+                heading.append(...node.childNodes);
+                card.append(heading);
+                result.append(card);
+            } else {
+                if (!card) {
+                    card = document.createElement('div');
+                    card.className = 'taste-extra markdown-content';
+                    result.append(card);
+                }
+                card.append(node);
+            }
+        });
+        tastes.replaceChildren(result);
+    }, tastes);
     bindSections(document.querySelector('.interview-shell'), '../textes/affrontement/contenu.md', [
         { selector: '#interview-testimony', matches: /jugement|temoignage|leur avis/, empty: '[Témoignage à ajouter]' },
         { selector: '#interview-reaction', matches: /reaction|mon avis/ }

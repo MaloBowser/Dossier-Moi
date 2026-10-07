@@ -41,7 +41,7 @@ catch { ({ chromium } = createRequire(process.execPath)('playwright')); }
         check(!await page.locator('#future-letter').isVisible(), 'Un mail secondaire ne s’ouvre pas');
         check(await page.locator('#custom-mails button, #custom-mails a').count() === 0, 'Aucun lien ni bouton dans les mails secondaires');
         for (const [name, text, selectors] of [
-            ['evaluation','## Mise en route\n- énergie\n## Utilisation recommandée\n1. écouter\n## Performances optimales\nperformance\n## Risque de bug\nfatigue\n## Dépannage\nrepos\n## Évolution\nprogrès', {'#manual-start':'énergie','#manual-use':'écouter','#manual-performance':'performance','#manual-bugs':'fatigue','#manual-repair':'repos','#manual-update':'progrès'}],
+            ['evaluation','## J’aime\n- musique\n- Lego\n## J’aime pas\n- pluie', {'#evaluation-lists':'musique','.taste-card:nth-child(2)':'pluie'}],
             ['affrontement','## Leur jugement\nTémoignage test\n## Ma réaction\nRéaction test', {'#interview-testimony':'Témoignage test','#interview-reaction':'Réaction test'}],
             ['conclusion','## Ce que j’ai aimé\n- plaisir\n## Ce que j’ai moins aimé\n- difficulté\n## Ce que je retiens\nbilan test', {'#conclusion-liked':'plaisir','#conclusion-disliked':'difficulté','#conclusion-reflection':'bilan test'}],
             ['reverie','Un rêve **lumineux**.',{'.dream-copy':'lumineux'}]
@@ -50,7 +50,7 @@ catch { ({ chromium } = createRequire(process.execPath)('playwright')); }
             await page.goto(`${base}/pages/${name}.html`);
             await ready(Object.keys(selectors)[0]);
             for(const [selector, expectedText] of Object.entries(selectors)) check((await page.locator(selector).textContent()).includes(expectedText),name+' : '+selector);
-            if(name==='evaluation') await page.screenshot({path:join(captures,'notice.png'),fullPage:true});
+            if(name==='evaluation') await page.screenshot({path:join(captures,'gouts.png'),fullPage:true});
         }
         await page.route('**/textes/recits/contenu.md',route=>route.fulfill({body:'## Première histoire\nRécit un.\n### Photos\n![Photo un](../../images/favicon.svg)\nLégende un.\n## Deuxième histoire\nRécit deux.\n### Photos\nLégende deux.\n## Troisième histoire\nRécit trois.\n### Photos\nLégende trois.'}));
         await page.goto(base+'/pages/recits.html');

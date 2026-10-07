@@ -162,35 +162,53 @@ if (interviewVideo && videoPlaceholder) {
     interviewVideo.addEventListener('error', () => { videoPlaceholder.hidden = false; });
 }
 
-/* Rêverie : entrer dans le nuage puis revenir dans la chambre. */
+/* Rêverie : traverser le halo, puis revenir au ciel de départ. */
 const bedroom = document.querySelector('#bedroom');
 const dreamWorld = document.querySelector('#dream-world');
 const enterDream = document.querySelector('#enter-dream');
 const wakeUp = document.querySelector('#wake-up');
 
 if (bedroom && dreamWorld && enterDream && wakeUp) {
-    const bubbles = bedroom.querySelector('.thought-bubbles');
-    enterDream.addEventListener('click', () => {
-        bedroom.classList.add('is-dreaming');
-        bubbles.classList.add('is-expanding');
-        window.setTimeout(() => {
-            bedroom.hidden = true;
-            dreamWorld.hidden = false;
-            wakeUp.focus({ preventScroll: true });
-        }, 950);
-    });
-    wakeUp.addEventListener('click', () => {
-        dreamWorld.style.opacity = '0';
-        dreamWorld.style.transition = 'opacity .5s';
-        window.setTimeout(() => {
-            dreamWorld.hidden = true;
-            dreamWorld.style.opacity = '';
-            bedroom.hidden = false;
-            bedroom.classList.remove('is-dreaming');
-            bubbles.classList.remove('is-expanding');
-            enterDream.focus({ preventScroll: true });
-        }, 500);
-    });
+    const veil = document.querySelector('.dream-veil');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let transitioning = false;
+    async function changeDream(entering) {
+        if (transitioning) return;
+        transitioning = true;
+        enterDream.disabled = wakeUp.disabled = true;
+        const outgoing = entering ? bedroom : dreamWorld;
+        const incoming = entering ? dreamWorld : bedroom;
+        const animations = [];
+        const animate = (element, frames, duration) => {
+            const animation = element.animate(frames, { duration, easing: 'ease-in-out', fill: 'forwards' });
+            animations.push(animation);
+            return animation.finished.catch(() => {});
+        };
+        try {
+            if (!reducedMotion.matches) {
+                await Promise.all([
+                    animate(veil, [{ opacity: 0 }, { opacity: 1 }], 650),
+                    animate(outgoing, [{ opacity: 1, transform: 'scale(1)' }, { opacity: 0, transform: entering ? 'scale(1.08)' : 'scale(.97)' }], 650)
+                ]);
+            }
+            outgoing.hidden = true;
+            incoming.hidden = false;
+            window.scrollTo({ top: 0, behavior: 'instant' });
+            if (!reducedMotion.matches) {
+                await Promise.all([
+                    animate(veil, [{ opacity: 1 }, { opacity: 0 }], 700),
+                    animate(incoming, [{ opacity: 0, transform: 'translateY(18px)' }, { opacity: 1, transform: 'translateY(0)' }], 700)
+                ]);
+            }
+        } finally {
+            animations.forEach(animation => animation.cancel());
+            enterDream.disabled = wakeUp.disabled = false;
+            transitioning = false;
+            (entering ? document.querySelector('#dream-reading-title') : enterDream).focus({ preventScroll: true });
+        }
+    }
+    enterDream.addEventListener('click', () => changeDream(true));
+    wakeUp.addEventListener('click', () => changeDream(false));
 }
 
 const renderMarkdownFile = (container, source, emptyMessage = 'Texte à ajouter') => {

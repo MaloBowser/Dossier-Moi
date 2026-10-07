@@ -1,0 +1,63 @@
+const { createRequire } = require('node:module');
+const { chromium } = createRequire(process.execPath)('playwright');
+const assert = require('node:assert/strict');
+const { readFileSync, mkdirSync } = require('node:fs');
+const { join } = require('node:path');
+(async () => {
+ const browser = await chromium.launch({headless:true, channel:'msedge'});
+ const page = await browser.newPage({viewport:{width:1440,height:1000}});
+ const errors=[];
+ page.on('pageerror', error => errors.push(error.message));
+ const base=process.argv[2] || 'http://127.0.0.1:8765';
+ const captures=join(__dirname,'../.qa-projets');
+ mkdirSync(captures,{recursive:true});
+ let checks=0;
+ const check=(value,message)=>{assert.ok(value,message); checks++;};
+ try {
+  await page.goto(base+'/pages/evaluation.html');
+  await page.waitForSelector('#evaluation-lists[data-content-state="ready"]');
+  const source=readFileSync(join(__dirname,'../textes/evaluation/contenu.md'),'utf8');
+  const expected=await page.evaluate(text=>{const box=document.createElement('div');DossierMarkdown.render(box,text);return [...box.querySelectorAll('td')].map(c=>c.textContent.trim()).filter(Boolean);},source);
+  assert.deepEqual(await page.locator('.taste-card li').allTextContents(),expected); checks++;
+  check(await page.locator('.taste-card').count()===2,'Deux fiches pour les deux listes');
+  await page.screenshot({path:join(captures,'evaluation-desktop.png'),fullPage:true});
+  await page.setViewportSize({width:390,height:844});
+  check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Évaluation sans débordement mobile');
+  await page.screenshot({path:join(captures,'evaluation-mobile.png'),fullPage:true});
+  let fixture='## J’aime\n- **Musique**\n- Lego\n\n## J’aime pas\n- La pluie\n';
+  await page.route('**/textes/evaluation/contenu.md',route=>route.fulfill({body:fixture}));
+  await page.reload();
+  await page.waitForSelector('.taste-card strong');
+  check(await page.locator('.taste-card li').count()===3,'Listes Markdown prises en charge');
+  fixture='## J’aime\n- Piano\n\n## J’aime pas\n- Le bruit\n';
+  await page.evaluate(()=>window.dispatchEvent(new Event('focus')));
+  await page.waitForFunction(()=>document.querySelector('.taste-card li')?.textContent==='Piano');
+  check(await page.locator('.taste-card').count()===2,'Actualisation sans duplication');
+  for (const width of [1440,390,320]) {
+   await page.setViewportSize({width,height:900});
+   await page.goto(base+'/pages/reverie.html');
+   await page.waitForSelector('.dream-copy[data-content-state="ready"]',{state:'attached'});
+   check(await page.locator('#bedroom').isVisible(),'Accueil du rêve visible');
+   check(!await page.locator('#dream-world').isVisible(),'Lecture masquée au départ');
+   check(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Rêve sans débordement à '+width);
+   await page.screenshot({path:join(captures,'reverie-'+width+'.png'),fullPage:true});
+   await page.locator('#enter-dream').click();
+   await page.evaluate(()=>{document.querySelector('#enter-dream').click();document.querySelector('#wake-up').click();});
+   await page.waitForFunction(()=>document.activeElement.id==='dream-reading-title');
+   check(await page.locator('#dream-world').isVisible()&&!await page.locator('#bedroom').isVisible(),'Entrée terminée malgré les clics répétés');
+   check(await page.evaluate(()=>scrollY===0),'Début du texte visible');
+   await page.screenshot({path:join(captures,'reverie-lecture-'+width+'.png'),fullPage:true});
+   await page.locator('#wake-up').click();
+   await page.waitForFunction(()=>document.activeElement.id==='enter-dream');
+   check(await page.locator('#bedroom').isVisible()&&!await page.locator('#dream-world').isVisible(),'Retour au ciel');
+  }
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.locator('#enter-dream').click();
+  check(await page.locator('#dream-world').isVisible(),'Accès immédiat avec mouvements réduits');
+  check(await page.evaluate(()=>document.getAnimations().length===0),'Aucune animation en mode réduit');
+  await page.locator('#wake-up').click();
+  check(await page.locator('#bedroom').isVisible(),'Retour immédiat avec mouvements réduits');
+  check(errors.length===0,'Aucune erreur JavaScript : '+errors.join('; '));
+  console.log(checks+' contrôles réussis. Captures : '+captures);
+ } finally { await browser.close(); }
+})().catch(error=>{console.error(error);process.exitCode=1;});

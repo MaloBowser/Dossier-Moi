@@ -139,3 +139,102 @@ body.entrance-revealing .home-world { filter: blur(0); transform: scale(1); opac
     .intro.is-entering .brick-wall__half { transform: none; opacity: 0; }
     .open-journal::after { display: none; }
 }
+
+/* Cadres joyeux et mise en page des photographies du petit chef. */
+.journal-paper--right:has(.journal-photos) {
+    padding: clamp(24px, 3vw, 38px);
+    background:
+        radial-gradient(circle at 12% 16%, #e8996640 0 4px, transparent 5px),
+        radial-gradient(circle at 88% 82%, #619e9540 0 5px, transparent 6px),
+        linear-gradient(90deg, #634a2a20, transparent 9%), #f6e8cd;
+    background-size: 73px 91px, 107px 83px, auto;
+}
+.journal-photos {
+    position: relative;
+    min-height: 560px;
+    height: 100%;
+    padding: 55px 0 45px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 26px;
+}
+.journal-photos[hidden] { display: none; }
+.journal-photos::before, .journal-photos::after {
+    position: absolute;
+    font-size: clamp(32px, 4vw, 48px);
+    line-height: 1;
+    pointer-events: none;
+}
+.journal-photos::before { content: "✦ 🍳 ✧"; top: 0; left: 7%; color: #dc7857; transform: rotate(-8deg); }
+.journal-photos::after { content: "🥄 ✧ 🧁"; bottom: 0; right: 5%; color: #488e88; transform: rotate(7deg); }
+.souvenir-print {
+    --frame-color: #e58a63;
+    position: relative;
+    width: 100%;
+    margin: 0;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 3px solid #fff7df;
+    border-radius: 23px 13px 25px 12px;
+    background:
+        radial-gradient(circle, #fff6d9 0 2px, transparent 3px) 0 0 / 13px 13px,
+        var(--frame-color);
+    box-shadow: 3px 5px 0 #71472d26, 7px 13px 22px #49351e30;
+    transform: rotate(-3deg);
+    transition: transform .25s ease;
+}
+.souvenir-print::before {
+    content: "★";
+    position: absolute;
+    z-index: 1;
+    top: -24px;
+    right: -12px;
+    color: #ffcd4a;
+    font-size: 54px;
+    line-height: 1;
+    text-shadow: 2px 2px 0 #fff9e9, -2px -2px 0 #fff9e9, 3px 4px 0 #78533935;
+    transform: rotate(14deg);
+}
+.souvenir-print::after {
+    content: "";
+    position: absolute;
+    top: -12px;
+    left: 15%;
+    width: 72px;
+    height: 25px;
+    background: repeating-linear-gradient(45deg, #68a9a4d9 0 5px, #bbd7bdd9 5px 10px);
+    transform: rotate(-10deg);
+}
+.journal-photos .souvenir-print img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 2px solid #fff8e8;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: none;
+    transform: none;
+    object-fit: contain;
+}
+.journal-photos[data-journal-page="2"] .souvenir-print { --frame-color: #6aaba7; transform: rotate(3deg); }
+.journal-photos[data-journal-page="3"] { gap: 22px; padding-block: 35px; }
+.journal-photos[data-journal-page="3"]::before { content: "✦"; left: 0; top: 4px; }
+.journal-photos[data-journal-page="3"]::after { content: "✧"; right: 0; bottom: 0; }
+.journal-photos[data-journal-page="3"] .souvenir-print:first-child { width: 65%; align-self: flex-start; --frame-color: #e9b64f; transform: rotate(-5deg); }
+.journal-photos[data-journal-page="3"] .souvenir-print:nth-child(2) { width: 88%; align-self: flex-end; --frame-color: #85a969; transform: rotate(4deg); }
+@media (hover: hover) {
+    .journal-photos .souvenir-print:hover { transform: rotate(0); }
+}
+@media (max-width: 760px) {
+    .journal-photos { min-height: 420px; }
+    .souvenir-print { padding: 12px; }
+    .journal-photos[data-journal-page="3"] .souvenir-print:first-child { width: 68%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .souvenir-print { transition: none; }
+}
