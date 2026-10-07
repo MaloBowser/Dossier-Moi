@@ -2,6 +2,20 @@
     const HASH_ATTENDU = "81d6f9759fd2767dd45d476fd0cf9f73503e6684275e3ff2e92b6abd20cf4674";
     const racine = new URL(".", document.currentScript.src);
     const cleSession = "dossier-moi-acces:" + racine.pathname;
+    const actualisation = performance.getEntriesByType("navigation")[0]?.type === "reload";
+    if (actualisation) {
+        try { sessionStorage.removeItem(cleSession); }
+        catch { /* Un stockage inaccessible laisse l'entrée verrouillée. */ }
+    }
+    // Une rubrique ne demande rien pendant la navigation normale.
+    // Son rafraîchissement renvoie à l'unique écran d'entrée.
+    if (location.pathname.startsWith(racine.pathname + "pages/")) {
+        if (actualisation) {
+            document.documentElement.style.visibility = "hidden";
+            location.replace(new URL("index.html", racine));
+        }
+        return;
+    }
     const estAutorise = () => {
         try { return sessionStorage.getItem(cleSession) === HASH_ATTENDU; }
         catch { return false; }
@@ -56,7 +70,7 @@
                     champ.focus();
                     return;
                 }
-                // L'autorisation dure uniquement pendant la session de cet onglet.
+                // L'autorisation dure jusqu'au rafraîchissement ou à la fermeture.
                 sessionStorage.setItem(cleSession, HASH_ATTENDU);
                 document.documentElement.classList.remove("acces-verrouille");
                 entree.remove();

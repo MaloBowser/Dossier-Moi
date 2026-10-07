@@ -4,8 +4,9 @@
 
 L’accueil affiche une page de connexion avant l’introduction. `acces.js` compare
 l’empreinte SHA-256 du mot de passe, puis mémorise l’accès dans `sessionStorage`
-pour cet onglet : les retours à l’accueil et les rafraîchissements ne le demandent
-plus. Fermer l’onglet et ouvrir une nouvelle visite rétablit la demande (la fonction
+pour cet onglet : les changements de rubrique et les retours à l’accueil ne le
+demandent plus. Un rafraîchissement verrouille à nouveau le site ; depuis une
+rubrique, il ramène à l’écran d’entrée. Fermer l’onglet et ouvrir une nouvelle visite rétablit la demande (la fonction
 « restaurer les onglets » du navigateur peut toutefois restaurer la session).
 Les rubriques n’ont pas d’écran de connexion supplémentaire.
 
