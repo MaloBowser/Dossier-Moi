@@ -1,2 +1,2 @@
-<!-- Écris ici ta conclusion. -->
-
+Ce travail m’a permis de me voir sous d’autres angles, notamment grâce au regard de mes amis. J’ai repensé à certains souvenirs incroyables, mais aussi à des souvenirs plus tristes. J’ai pu comprendre de petites choses sur moi que je n’avais pas forcément vues avant.  
+J’ai vraiment adoré ce travail, ça a été très intéressant de le faire. Merci beaucoup à vous de nous avoir demandé de réaliser un travail sur notre petite personne !

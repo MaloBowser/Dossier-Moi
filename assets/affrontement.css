@@ -1,0 +1,42 @@
+/* Habillage propre à la messagerie de Muffin. */
+.sms-scene { margin: 32px auto 0; font-family: "Segoe UI", system-ui, sans-serif; }
+.sms-caption { margin: 0 0 22px; color: #eed7c5; text-align: center; font-size: .9rem; letter-spacing: .025em; }
+.sms-caption span { display: block; margin-top: 5px; color: #c9bdb8; font-size: .8rem; }
+.sms-phone { display: flex; flex-direction: column; width: min(100%, 420px); height: 740px; height: min(740px, 88svh); min-height: 460px; margin: auto; overflow: hidden; border: 6px solid #101827; border-radius: 42px; outline: 1px solid #4d6890; color: #f0f6ff; background: #0b1425; box-shadow: 0 32px 65px #03091590, 0 0 36px #0766ff24, inset 0 0 0 1px #8ab8ff15; color-scheme: dark; }
+.sms-statusbar { position: relative; display: flex; flex: 0 0 39px; align-items: center; justify-content: space-between; padding: 4px 24px 0; color: #dce9ff; background: #101c32; font-size: .7rem; font-weight: 600; }
+.sms-speaker { position: absolute; top: 16px; left: 50%; width: 44px; height: 4px; border-radius: 8px; background: #344460; transform: translateX(-50%); }
+.sms-status-icons { display: flex; align-items: center; gap: 5px; }
+.sms-status-icons svg { display: block; width: 16px; height: 14px; }
+.sms-status-icons svg:last-child { width: 23px; }
+.sms-header { display: flex; flex-shrink: 0; align-items: center; gap: 12px; padding: 13px 18px 19px 10px; background: linear-gradient(120deg, #101c32, #102952); border-bottom: 1px solid #2476ff70; }
+.sms-back { display: grid; place-items: center; flex: 0 0 32px; min-height: 44px; border-radius: 12px; color: #82bcff; text-decoration: none; font-size: 2.3rem; line-height: 1; transition: background .2s; }
+.sms-back:hover { background: #2a4c7d; }
+.sms-avatar { display: block; flex: 0 0 58px; width: 58px; height: 58px; object-fit: cover; border: 2px solid #459aff; border-radius: 50%; box-shadow: 0 0 0 4px #0875ff18, 0 0 18px #0875ff55; }
+.sms-contact { min-width: 0; }
+.sms-contact strong { display: block; font-size: 1.16rem; letter-spacing: -.02em; overflow-wrap: anywhere; }
+.sms-contact > span { display: block; margin-top: 5px; color: #a9c6ed; font-size: .73rem; }
+.sms-draft { flex-shrink: 0; margin: 0; padding: 10px 14px; border-bottom: 1px solid #263a57; color: #b7cef0; background: #13233c; text-align: center; font-size: .64rem; font-weight: 600; line-height: 1.5; }
+.sms-thread { min-height: 0; flex: 1 1 auto; overflow-y: auto; overscroll-behavior-y: contain; scrollbar-width: auto; scrollbar-color: #458fff #101c30; scrollbar-gutter: stable; padding: 0 13px 22px 17px; overflow-anchor: none; background: radial-gradient(ellipse at 0 30%, #10356b30, transparent 70%), #0b1425; }
+.sms-thread::-webkit-scrollbar { width: 9px; }
+.sms-thread::-webkit-scrollbar-track { background: #101c30; }
+.sms-thread::-webkit-scrollbar-thumb { border: 2px solid #101c30; border-radius: 8px; background: #458fff; }
+.sms-date { margin: 20px 0; color: #97abc7; font-size: .65rem; text-align: center; }
+.sms-messages { display: flex; flex-direction: column; gap: 18px; margin: 0; padding: 0; list-style: none; }
+.sms-message { align-self: flex-start; max-width: 88%; }
+.sms-message--malo { align-self: flex-end; }
+.sms-message-meta { display: block; margin: 0 5px 6px; color: #a2b7d5; font-size: .65rem; line-height: 1.45; }
+.sms-message--malo .sms-message-meta { text-align: right; }
+.sms-bubble { margin: 0; padding: 12px 14px; border: 1px solid #344a69; border-radius: 18px 18px 18px 5px; color: #edf4ff; background: #1c2b43; box-shadow: 0 3px 8px #02081720; font-size: .88rem; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; }
+.sms-message--malo .sms-bubble { border-color: #3786ff; border-radius: 18px 18px 5px 18px; color: #fff; background: linear-gradient(125deg, #0763ef, #164fc9); }
+.sms-message--placeholder .sms-bubble { border-style: dashed; border-color: #526e93; color: #bfd0e9; background: #17263d; font-style: italic; }
+.sms-message--new { animation: sms-arrive .3s ease-out both; }
+.sms-footer { flex-shrink: 0; padding: 11px 14px 9px; border-top: 1px solid #263a57; background: #101c30; }
+.sms-footer p { margin: 0; color: #94abca; text-align: center; font-size: .62rem; line-height: 1.5; }
+.sms-homebar { display: block; width: 96px; height: 4px; margin: 10px auto 0; border-radius: 4px; background: #b2c4df; }
+.sms-help { margin: 20px 0 0; color: #c9bdb8; text-align: center; font-size: .78rem; line-height: 1.7; }
+.sms-fallback { font-size: .85rem; line-height: 1.6; }
+.sms-scene :focus-visible { outline: 2px solid #67b4ff; outline-offset: -3px; }
+.sms-scene [hidden] { display: none; }
+@keyframes sms-arrive { from { opacity: .5; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 480px) { .sms-phone { border-width: 5px; border-radius: 34px; } .sms-thread { padding-inline: 11px; } .sms-header { gap: 10px; } .sms-message { max-width: 92%; } }
+@media (prefers-reduced-motion: reduce) { .sms-message--new { animation: none; } .sms-back { transition: none; } }
