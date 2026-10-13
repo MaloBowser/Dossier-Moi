@@ -9,7 +9,7 @@
 | Piscine 🏊 | Badminton 🏸 |
 | Piano 🎹 | Hip-hop 🕺 |
 
-# 💔 J’aime pas
+# 💔 Je n’aime pas
 
 | | |
 |---|---|

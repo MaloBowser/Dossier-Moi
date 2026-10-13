@@ -1,10 +1,10 @@
-# Londres — Mon premier voyage sans mes parents 🇬🇧
+# Londres — Mon premier voyage à l’étranger sans mes parents 🇬🇧
 
 ## Pourquoi ce voyage est important pour moi
 
-Ce voyage en Angleterre reste un **souvenir inoubliable**, car c'était mon **premier voyage sans mes parents** et surtout mon premier grand voyage avec mes meilleures amies, **Anaëlle et Jeanne**.
+Ce voyage en Angleterre reste un **souvenir inoubliable**, car c'était mon **premier voyage à l’étranger sans mes parents** et surtout mon premier grand voyage avec mes meilleures amies, **Anaëlle et Jeanne**.
 
-Avant de partir, j'étais très **impatient** de découvrir Londres, **heureux** de partir avec mes amies et **fier** de faire mon premier voyage sans mes parents. Je n'étais pas vraiment stressé, car je savais que j'allais être bien entouré.
+Avant de partir, j'étais très **impatient** de découvrir Londres, **heureux** de partir avec mes amies et **fier** de faire mon premier voyage à l’étranger sans mes parents. Je n'étais pas vraiment stressé, car je savais que j'allais être bien entouré.
 
 Je me doutais déjà que nous allions vivre de super moments ensemble et créer des souvenirs dont on se souviendrait longtemps. Et aujourd'hui, je peux dire que c'est vraiment le cas !
 
@@ -86,6 +86,6 @@ Quand je repense à l'Angleterre, je pense évidemment à Londres, à Big Ben, �
 
 Mais finalement, ce n'est pas ce qui compte le plus pour moi.
 
-Ce voyage représente surtout **ma première vraie expérience loin de mes parents**, un peu plus d'autonomie, des fous rires et surtout tous les souvenirs créés avec mes amies.
+Ce voyage représente surtout **ma première vraie expérience à l’étranger loin de mes parents**, un peu plus d'autonomie, des fous rires et surtout tous les souvenirs créés avec mes amies.
 
 **Les monuments font partie de mes souvenirs, mais ce que je retiens le plus, ce sont tous les bons moments passés avec Anaëlle et Jeanne.**

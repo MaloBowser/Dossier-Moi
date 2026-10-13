@@ -2,7 +2,7 @@
 
 Mon frère de rêve serait mon petit frère et aurait **cinq ans de moins que moi**. Il serait châtain et de taille moyenne. Il me ressemblerait beaucoup dans ses passions, mais aurait aussi ses propres talents.
 
-Passionné de **Lego et de bricolage**, il adorerait construire et créer des choses avec ses mains. Il aimerait aussi beaucoup la **musique** et jouerait très bien de la **guitare**. Il serait également fan de **football** ⚽, il en ferait comme sport et soutiendrait l'équipe de France, tout en ayant un bon esprit d'équipe.
+Passionné de **Lego et de bricolage**, il adorerait construire et créer des choses avec ses mains. Il aimerait aussi beaucoup la **musique** et jouerait très bien de la **guitare**. Il serait également fan de **football** ⚽, il pratiquerait ce sport et soutiendrait l'équipe de France, tout en ayant un bon esprit d'équipe.
 
 En plus, il serait très doué en **dessin**, encore plus que moi (ce qui n'est pas très difficile, vu que mon niveau ne dépasse pas vraiment celui des bonshommes bâtons 😂).
 

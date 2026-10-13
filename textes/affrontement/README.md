@@ -1,36 +1,24 @@
 # Conversation SMS — Affrontement du jugement d’autrui
 
-La conversation se prépare dans `conversation.js`. Les messages actuels sont des
-brouillons de mise en scène, pas une retranscription. Aucune réponse de l’amie
-n’est inventée. Le surnom est « Muffin » et son logo fourni est dans `images/muffin-avatar.png`.
+`conversation.js` contient les 53 SMS fournis par Malo, dans leur ordre exact,
+sans ajout ni modification du texte : 33 messages de Malo et 20 de Muffin.
 
-Chaque tableau dans `exchanges` regroupe un petit échange. Tous sont affichés dès l’ouverture.
-On peut ajouter autant d’échanges et de messages que nécessaire. Un message contient :
+- `author: 'malo'` : bulle bleue à droite, pour les questions comme les réactions.
+- `author: 'amie'` : bulle à gauche, pour toutes les réponses de Muffin.
+- `text` : texte exact du SMS, affiché comme du texte simple.
 
-- `author: 'malo'` (droite) ou `author: 'amie'` (gauche) ;
-- `text` : le texte exact, avec `\n` pour un retour à la ligne ;
-- `draft: true` pour les propositions de Malo à valider ;
-- `placeholder: true` uniquement pour un emplacement en attente de réponse.
+Avant chaque SMS, une bulle de trois points indique « Malo écrit… » à droite ou
+« Muffin écrit… » à gauche. La durée de saisie dépend de la longueur du message,
+avec une pause de lecture entre les interventions. La bulle de saisie disparaît
+quand le SMS arrive, ou quand le lecteur choisit « Tout afficher ».
 
-Remplacer les emplacements avec les réponses fournies par Malo, puis retirer leurs
-indicateurs `placeholder` / `draft` après validation. Retirer le bandeau général
-en passant `draft` à `false` seulement lorsque tout le dialogue est définitif.
-Modifier `contact` pour afficher le vrai prénom ou surnom choisi. Les textes sont
-affichés comme du texte simple, sans interprétation HTML.
+Les SMS apparaissent progressivement. Le téléphone suit les nouveaux messages
+uniquement si le lecteur est déjà en bas ; il peut remonter librement pour relire.
+Le bouton « Tout afficher » permet de lire immédiatement la conversation entière
+sans perdre sa position de lecture. Les animations respectent les mouvements réduits.
+La barre d’espace affiche immédiatement le SMS suivant, pendant la saisie ou une
+pause, puis la lecture automatique reprend. Un appui maintenu ne saute pas plusieurs
+messages. Les champs et les boutons conservent leur fonctionnement clavier habituel.
 
-Les exemples de réaction ne sont pas des réactions définitives : les ajuster à
-la vraie réponse reçue. Conserver l’alternance entre son regard, ma réaction et,
-si elle existe, sa réponse à ma réaction.
-
-Sujets en réserve, à intégrer naturellement une fois les réponses reçues : cinq
-qualités, cinq défauts, caractère, principale qualité, pire défaut, attitude avec
-les amis et les personnes moins connues, calme/énergie, parole/réserve, rire et
-humour, ce qui me fait rire, agacement et colère, patience, organisation.
-Cette liste ne génère aucun message automatiquement.
-
-La lecture n’est jamais temporisée. Tous les messages restent dans le téléphone.
-Le défilement est natif, à la molette, avec la barre de défilement, au doigt ou au clavier.
-Aucun bouton de lecture ni défilement automatique. Les bulles s’animent une seule
-fois quand elles entrent dans la zone visible ; les mouvements réduits sont respectés.
-Les anciens encadrés « Leur jugement » et « Ma réaction » sous le téléphone ont
-été retirés : le regard de Muffin et les réactions de Malo figurent dans la conversation.
+Aucun fichier audio ni pièce jointe n’est associé à la conversation.
+Le bandeau de brouillon est masqué (`draft: false`).
