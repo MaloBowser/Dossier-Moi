@@ -3,16 +3,30 @@
 <iframe id="app" src="../pages/projets.html"></iframe><pre id="results">EN COURS</pre>
 <script>
 const frame = document.getElementById('app');
-frame.onload = () => {
+frame.onload = async () => {
   try {
     const d = frame.contentDocument, w = frame.contentWindow;
     const results = [];
+    const wait = delay => new Promise(resolve => w.setTimeout(resolve, delay));
     const assert = (name, condition) => { results.push(name + ': ' + (condition ? 'OK' : 'ÉCHEC')); if (!condition) throw new Error(name); };
     const visible = () => [...d.querySelectorAll('[data-window]')].filter(e => !e.hidden);
     const click = app => d.querySelector('.taskbar-button[data-app="' + app + '"]').click();
     assert('Icônes décoratives et trois applications', d.querySelectorAll('.desktop-shortcut').length === 15 && d.querySelectorAll('.taskbar-button').length === 3);
     assert('Bureau initial', visible().length === 0 && !d.body.classList.contains('has-open-window'));
     assert('Notification Outlook initiale', [...d.querySelectorAll('.notification-badge')].every(e => !e.hidden));
+    assert('Infobulle retour affichée à l’arrivée', d.body.classList.contains('show-return-hint'));
+    await wait(1100);
+    const outlookNotice = d.querySelector('.desktop-outlook-notice.is-visible');
+    assert('Invitation Outlook après une seconde', outlookNotice && outlookNotice.textContent.includes('Vous avez reçu un message important.'));
+    outlookNotice.click();
+    assert('Invitation ouvre Outlook', visible().length === 1 && visible()[0].dataset.window === 'outlook');
+    assert('Badge Outlook conservé', [...d.querySelectorAll('.notification-badge')].every(e => !e.hidden));
+    await wait(300);
+    assert('Invitation retirée après le clic', !d.querySelector('.desktop-outlook-notice'));
+    click('outlook');
+    assert('Retour au bureau après le test de l’invitation', visible().length === 0);
+    await wait(1700);
+    assert('Infobulle retour masquée après trois secondes', !d.body.classList.contains('show-return-hint'));
     click('outlook');
     assert('Ouverture Outlook', visible().length === 1 && visible()[0].dataset.window === 'outlook');
     assert('Retour masqué', w.getComputedStyle(d.querySelector('.desktop-return')).display === 'none');
@@ -35,6 +49,7 @@ frame.onload = () => {
     closeOutlook.click();
     assert('Fermeture Outlook', visible().length === 0 && !d.querySelector('.taskbar-button[data-app="outlook"]').classList.contains('is-running'));
     assert('Focus après fermeture', d.activeElement === d.querySelector('.taskbar-button[data-app="outlook"]'));
+    assert('Guidage de sortie après fermeture Outlook', d.body.classList.contains('show-return-hint') && d.body.classList.contains('exit-guidance'));
     click('outlook');
     d.querySelector('#window-outlook [data-minimize]').click();
     assert('Réduction Outlook', visible().length === 0 && d.querySelector('.taskbar-button[data-app="outlook"]').classList.contains('is-running'));

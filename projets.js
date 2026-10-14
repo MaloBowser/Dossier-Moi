@@ -37,6 +37,9 @@
     const runningApps = new Set();
     let activeApp = null;
     let unread = true;
+    let outlookNotice = null;
+    let outlookNoticeTimer = null;
+    let returnHintTimer = null;
 
     function icon(name) {
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -119,9 +122,62 @@
             button.setAttribute('aria-expanded', String(app === activeApp));
         });
     }
+    function showReturnHint(exitGuidance = false, duration = 3000) {
+        if (returnHintTimer) window.clearTimeout(returnHintTimer);
+        document.body.classList.toggle('exit-guidance', exitGuidance);
+        document.body.classList.add('show-return-hint');
+        returnHintTimer = window.setTimeout(() => {
+            document.body.classList.remove('show-return-hint', 'exit-guidance');
+            returnHintTimer = null;
+        }, duration);
+    }
+    function dismissOutlookNotice() {
+        if (outlookNoticeTimer) window.clearTimeout(outlookNoticeTimer);
+        outlookNoticeTimer = null;
+        if (!outlookNotice) return;
+        const notice = outlookNotice;
+        outlookNotice = null;
+        notice.classList.remove('is-visible');
+        window.setTimeout(() => notice.remove(), 240);
+    }
+    function showOutlookNotice() {
+        if (activeApp !== null || outlookNotice) return;
+        const notice = document.createElement('button');
+        notice.type = 'button';
+        notice.className = 'desktop-outlook-notice';
+        notice.setAttribute('aria-label', 'Outlook — Nouveau message. Vous avez reçu un message important. Ouvrir Outlook.');
+        notice.setAttribute('aria-live', 'polite');
+
+        const picture = document.createElement('span');
+        picture.className = 'outlook-notice-picture';
+        picture.append(icon('outlook'));
+
+        const copy = document.createElement('span');
+        copy.className = 'outlook-notice-copy';
+        const title = document.createElement('strong');
+        title.textContent = 'Outlook — Nouveau message';
+        const message = document.createElement('span');
+        message.textContent = 'Vous avez reçu un message important.';
+        const action = document.createElement('b');
+        action.textContent = 'Ouvrir Outlook →';
+        copy.append(title, message, action);
+        notice.append(picture, copy);
+
+        notice.addEventListener('click', () => {
+            document.querySelector('.desktop-shortcut[data-app="outlook"]')?.click();
+            dismissOutlookNotice();
+        });
+        document.body.append(notice);
+        outlookNotice = notice;
+        // Mesure volontaire : l’état initial est peint avant l’animation d’entrée.
+        void notice.offsetWidth;
+        notice.classList.add('is-visible');
+        outlookNoticeTimer = window.setTimeout(dismissOutlookNotice, 8500);
+    }
     function openApp(app) {
         const target = windows.get(app);
         if (!target) return;
+        dismissOutlookNotice();
         windows.forEach(element => {
             element.hidden = true;
             element.classList.remove('is-opening');
@@ -147,6 +203,7 @@
     function closeApp(app) {
         runningApps.delete(app);
         minimizeApp(app);
+        if (app === 'outlook') showReturnHint(true, 4000);
     }
     windows.forEach((element, app) => {
         element.querySelector('[data-close]')?.addEventListener('click', () => closeApp(app));
@@ -312,4 +369,8 @@
     } else if (windows.has(initialApp)) {
         openApp(initialApp);
     }
+
+    // Deux repères discrets, sans modifier le bureau ni ses applications.
+    showReturnHint();
+    if (activeApp === null) window.setTimeout(showOutlookNotice, 1000);
 })();

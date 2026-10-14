@@ -19,9 +19,27 @@ button:focus-visible, a:focus-visible { outline: 2px solid #46a9ff; outline-offs
 [data-icon] { display: inline-flex; flex: none; align-items: center; justify-content: center; }
 .icon { display: block; width: 18px; height: 18px; flex: none; }
 .desktop { position: relative; height: calc(100dvh - var(--taskbar-height)); overflow: hidden; }
-.desktop-return { position: fixed; z-index: 10; bottom: 62px; right: 15px; display: grid; width: 29px; height: 29px; place-items: center; color: #fff; border: 1px solid #ffffff50; border-radius: 4px; background: #24242499; }
+.desktop-return { position: fixed; z-index: 10; bottom: 62px; right: 15px; display: grid; width: 29px; height: 29px; place-items: center; color: #fff; border: 1px solid #ffffff50; border-radius: 4px; background: #24242499; transition: transform .16s ease, background-color .16s ease; }
 .desktop-return .icon { width: 15px; height: 15px; }
+.desktop-return::after { content: "Retour au Dossier Moi"; position: absolute; right: 0; bottom: calc(100% + 8px); width: max-content; max-width: calc(100vw - 30px); padding: 7px 10px; border: 1px solid #ffffff38; border-radius: 8px; background: #20252be8; box-shadow: 0 7px 24px #0b182455; color: #fff; font: 600 12px/1.2 var(--ui); white-space: nowrap; opacity: 0; pointer-events: none; transform: translateY(4px); transition: opacity .16s ease, transform .16s ease; backdrop-filter: blur(16px); }
+.desktop-return:hover { transform: scale(1.07); background: #242424c7; }
+.desktop-return:hover::after,
+.desktop-return:focus-visible::after,
+.show-return-hint .desktop-return::after { opacity: 1; transform: translateY(0); }
+.exit-guidance .desktop-return::after { content: "Pour sortir : Retour au Dossier Moi"; }
 .has-open-window .desktop-return { display: none; }
+
+/* Invitation Outlook : une notification Windows discrète, posée au-dessus du bureau. */
+.desktop-outlook-notice { position: fixed; z-index: 990; right: 16px; bottom: 154px; display: grid; grid-template-columns: 42px minmax(0,1fr); width: min(350px, calc(100vw - 32px)); gap: 12px; padding: 14px; overflow: hidden; border: 1px solid #ffffff8a; border-radius: 13px; background: linear-gradient(145deg, #f7fbfdfa, #e8f2f7f5); box-shadow: 0 16px 45px #0c263f55, inset 0 1px #fff9; color: #25323b; text-align: left; opacity: 0; pointer-events: none; transform: translateY(12px) scale(.98); transition: opacity .22s ease, transform .22s ease, box-shadow .16s ease; backdrop-filter: blur(24px) saturate(135%); }
+.desktop-outlook-notice::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 3px; background: #0879d8; }
+.desktop-outlook-notice.is-visible { opacity: 1; pointer-events: auto; transform: none; }
+.desktop-outlook-notice:hover { box-shadow: 0 19px 52px #0c263f6b, inset 0 1px #fff; transform: translateY(-2px); }
+.outlook-notice-picture { display: grid; width: 42px; height: 42px; place-items: center; border-radius: 10px; background: #fff9; box-shadow: inset 0 0 0 1px #ffffffb8; }
+.outlook-notice-picture .icon { width: 29px; height: 29px; }
+.outlook-notice-copy { display: flex; min-width: 0; flex-direction: column; gap: 3px; }
+.outlook-notice-copy strong { color: #17232c; font-size: 13px; font-weight: 650; }
+.outlook-notice-copy > span { color: #52616c; font-size: 12px; }
+.outlook-notice-copy b { margin-top: 4px; color: #006fc9; font-size: 12px; font-weight: 650; }
 
 /* Raccourcis : seuls les trois boutons d'application sont actifs. */
 .desktop-shortcuts { position: absolute; inset: 12px; }
@@ -315,6 +333,7 @@ button.mail-card:hover { background: #f0f7fe; }
     .window-controls button, .window-controls > span { width: 32px; }
     .outlook-controls button { width: 42px; }
     body:not(.has-open-window) .taskbar { left: 5px; right: 5px; bottom: 5px; border-radius: 14px; }
+    .desktop-outlook-notice { right: 8px; bottom: 145px; width: min(330px, calc(100vw - 16px)); }
     .code-titlebar { gap: 4px; }
     .code-command { padding: 0 4px; font-size: 11px; gap: 4px; }
     .code-activity { display: none; }
