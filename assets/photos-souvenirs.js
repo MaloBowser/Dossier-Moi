@@ -1,6 +1,10 @@
 // Généré par outils/exporter_photos.py.
 window.DossierPhotosSouvenirs = {
-  "lisbonne": [],
+  "lisbonne": [
+    "../images/souvenirs/lisbonne/77021070587__BA7CA78B-79A3-418D-8B30-0B8F12763422.jpeg",
+    "../images/souvenirs/lisbonne/8b361a5a-ea92-43cb-acc4-cbac839300cd.JPG",
+    "../images/souvenirs/lisbonne/IMG_7110.jpeg"
+  ],
   "londres": [
     "../images/souvenirs/londres/Image%20ChatGPT%206%20oct.%202026%2C%2017_57_00.jpg",
     "../images/souvenirs/londres/Image%20ChatGPT%206%20oct.%202026%2C%2017_57_05.jpg",
@@ -36,7 +40,14 @@ window.DossierPhotosSouvenirs = {
     "../images/souvenirs/vezzano-ligure/Image%20ChatGPT%206%20oct.%202026%2C%2017_56_52.jpg",
     "../images/souvenirs/vezzano-ligure/Image%20ChatGPT%206%20oct.%202026%2C%2018_01_54.jpg"
   ],
-  "vinaros": [],
+  "vinaros": [
+    "../images/souvenirs/vinaros/IMG_7362.jpeg",
+    "../images/souvenirs/vinaros/IMG_7374.jpeg",
+    "../images/souvenirs/vinaros/IMG_7387.jpeg",
+    "../images/souvenirs/vinaros/IMG_7405.jpeg",
+    "../images/souvenirs/vinaros/IMG_7484.jpeg",
+    "../images/souvenirs/vinaros/IMG_7555.jpeg"
+  ],
   "gerardmer": [
     "../images/souvenirs/gerardmer/DSC_0533.JPG",
     "../images/souvenirs/gerardmer/DSC_0565.JPG",
