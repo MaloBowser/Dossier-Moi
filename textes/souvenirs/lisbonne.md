@@ -54,4 +54,4 @@ C'était **mon premier voyage hors de France**, mon premier grand **road trip en
 
 Finalement, ce ne sont pas forcément les voyages les plus longs qui laissent le plus de souvenirs.
 
-**Lisbonne, c'est pour moi le début des voyages hors de France : trois jours, deux pays traversés, un van, un mariage et beaucoup de souvenirs.**
+**Lisbonne, c'est pour moi le début des voyages à l'étranger : trois jours, deux pays traversés, un van, un mariage et beaucoup de souvenirs.**
