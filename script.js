@@ -251,6 +251,7 @@ const souvenirs = [
         date: '',
         texte: '',
         markdown: '../textes/souvenirs/rennes.md',
+        albumPhotos: false,
         images: []
     },
     {
@@ -261,6 +262,7 @@ const souvenirs = [
         date: '',
         texte: '',
         markdown: '../textes/souvenirs/chateaugiron.md',
+        albumPhotos: false,
         images: []
     },
     {
@@ -271,6 +273,7 @@ const souvenirs = [
         date: '',
         texte: '',
         markdown: '../textes/souvenirs/chanteloup.md',
+        albumPhotos: false,
         images: []
     },
     {
@@ -468,19 +471,21 @@ if (mapElement && typeof L !== 'undefined') {
             detailContent.append(createTextElement('p', 'memory-detail__date', souvenir.date));
         }
 
-        const albumButton = document.createElement('button');
-        albumButton.className = 'memory-detail__album-button';
-        albumButton.type = 'button';
-        albumButton.innerHTML = `
-            <span class="memory-detail__album-icon" aria-hidden="true">▣</span>
-            <span>
-                <strong>Ouvrir l’album photos</strong>
-                <small>${souvenir.images.length ? `${souvenir.images.length} photo${souvenir.images.length > 1 ? 's' : ''}` : 'Photos à ajouter'}</small>
-            </span>
-            <span class="memory-detail__album-arrow" aria-hidden="true">→</span>
-        `;
-        albumButton.addEventListener('click', () => openPhotoAlbum(souvenir, albumButton));
-        detailContent.append(albumButton);
+        if (souvenir.albumPhotos !== false) {
+            const albumButton = document.createElement('button');
+            albumButton.className = 'memory-detail__album-button';
+            albumButton.type = 'button';
+            albumButton.innerHTML = `
+                <span class="memory-detail__album-icon" aria-hidden="true">▣</span>
+                <span>
+                    <strong>Ouvrir l’album photos</strong>
+                    <small>${souvenir.images.length ? `${souvenir.images.length} photo${souvenir.images.length > 1 ? 's' : ''}` : 'Photos à ajouter'}</small>
+                </span>
+                <span class="memory-detail__album-arrow" aria-hidden="true">→</span>
+            `;
+            albumButton.addEventListener('click', () => openPhotoAlbum(souvenir, albumButton));
+            detailContent.append(albumButton);
+        }
 
         if (souvenir.texte) {
             detailContent.append(createTextElement('p', 'memory-detail__story', souvenir.texte));
