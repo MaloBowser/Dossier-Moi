@@ -82,7 +82,7 @@ window.DossierConversation = {
             },
             {
                 "author": "amie",
-                "text": "Alors là… tu peux vite t’énerver s’il y a une mention de… Ella !"
+                "text": "Alors là… tu peux vite t’énerver s’il y a une mention de… Eya  !"
             },
             {
                 "author": "malo",
@@ -190,7 +190,7 @@ window.DossierConversation = {
             },
             {
                 "author": "malo",
-                "text": "Merci."
+                "text": " Merci Beaucoup. En effet, j'ai changé de style de pantalons !!"
             },
             {
                 "author": "malo",
@@ -214,7 +214,7 @@ window.DossierConversation = {
             },
             {
                 "author": "malo",
-                "text": "Merci, ça me touche."
+                "text": "Merci, ça me touche. Tu es super ami aussi 😎 !!!"
             }
         ]
     ]
